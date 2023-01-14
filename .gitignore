@@ -1,0 +1,9 @@
+env
+renv
+data/raw
+logs/*_data
+01-demultiplex
+02-trim
+03-denoise/filter
+canopy
+*-log
