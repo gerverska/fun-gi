@@ -10,7 +10,7 @@ library(ggthemes)
 library(patchwork)
 
 # Load trimming summary and experiment metadata ####
-meta <- read.csv(file.path('logs', 'meta.csv')) |>
+meta <- read.csv(file.path('data', 'meta.csv')) |>
     pivot_longer(ends_with('id'), values_to = 'id', names_to = 'primers') |>
     select(template, dilution, id, primers, combo)
 
