@@ -28,6 +28,8 @@ mkdir -p scratch
 out='01-demultiplex'
 rm -r $out
 mkdir -p $out
+readme="${out}/README.md"
+touch $readme
 
 # Make a directory for log files ####
 rm -r logs

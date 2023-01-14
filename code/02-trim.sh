@@ -31,6 +31,8 @@ mkdir -p scratch/trim1 scratch/trim2 scratch/trim3
 out='02-trim/'
 rm -r $out
 mkdir -p $out
+readme="${out}README.md"
+touch $readme
 
 # Set read length
 #read_length=251

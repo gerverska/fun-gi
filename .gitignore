@@ -2,8 +2,8 @@ env
 renv
 data/raw
 logs/*_data
-01-demultiplex
-02-trim
+01-demultiplex/*.fq.gz
+02-trim/*.fq.gz
 03-denoise/filter
 canopy
 *-log

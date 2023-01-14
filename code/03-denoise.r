@@ -33,6 +33,7 @@ library(dplyr)
 out <- '03-denoise'
 unlink(out, recursive = T)
 dir.create(out)
+system(paste('touch', file.path(out, 'README.md')))
 
 # Read in forward and reverse reads ####
 in.path <- '02-trim'
