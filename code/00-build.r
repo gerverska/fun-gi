@@ -1,7 +1,7 @@
-# Use renv to download R packages from the renv.lock in the project directory ####
+# Use renv to download R packages from renv.lock to the project directory ####
 
-# Disable automatic snapshots to avoid writing over the lock file ####
-options(renv.config.auto.snapshot = F)
+# Change the snapshot protocol ####
+options(renv.settings.snapshot.type = 'all')
 
 # Initialize renv, but don't let it search for dependencies ####
 renv::init(bare = T)
