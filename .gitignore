@@ -1,6 +1,7 @@
 env
 renv
 data/raw
+data/*.gz
 logs/*_data
 01-demultiplex/*.fq.gz
 02-trim/*.fq.gz

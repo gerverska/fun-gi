@@ -4,25 +4,24 @@
 threads <- commandArgs(T) |> as.integer()
 
 if(is.na(threads) == T){
-		stop('Argument was converted to NA')
+	stop('Argument was converted to NA')
 }
 if(length(threads) < 1){
-		stop('Please specify the number of threads to launch')
+	stop('Please specify the number of threads to launch')
 }
 if(length(threads) > 1){
-		stop('Too many arguments have been provided')
+	stop('Too many arguments have been provided')
 }
 if(is.numeric(threads) == F){
-		stop('Only numeric arguments are accepted')
+	stop('Only numeric arguments are accepted')
 }
 if(threads < 1){
-		stop('At least one thread is needed')
+	stop('At least one thread is needed')
 } else {
-		cat(threads, 'threads requested', '\n')
+	cat(threads, 'threads requested', '\n')
 }
 
 # Load packages ####
-library(BiocManager)
 library(dada2)
 library(ggplot2)
 library(tibble)
@@ -60,24 +59,24 @@ filt.rev <- filt |> list.files(pattern = 'R2.fq.gz', full.names = T)
 
 # Make fastqc reports for each sample and read direction after filtering and trimming ####
 fastqc.fwd <- paste(paste(filt.fwd, collapse = ' '),
-										'-t', threads,
-										'-o scratch')
+                    '-t', threads,
+                    '-o scratch')
 fastqc.rev <- paste(paste(filt.rev, collapse = ' '),
-										'-t', threads,
-										'-o scratch')
+                    '-t', threads,
+                    '-o scratch')
 
 system2('fastqc', args = fastqc.fwd)
 system2('fastqc', args = fastqc.rev)
 
 # Synthesize multiqc reports for each read direction ####
 multiqc.fwd <- paste('-f -o logs',
-										 '-n 03-denoise-filt-R1.html',
-										 '-ip',
-										 "-i 'Forward reads after quality filtering and trimming'",
-										 'scratch/*R1_fastqc.zip')
-multiqc.rev <- gsub('R1.html', 'R2.html', multiqc.fwd) %>%
-		gsub('Forward', 'Reverse', .) %>%
-		gsub('R1_fastqc.zip', 'R2_fastqc.zip', .)
+                     '-n 03-denoise-filt-R1.html',
+                     '-ip',
+                     "-i 'Forward reads after quality filtering and trimming'",
+                     'scratch/*R1_fastqc.zip')
+multiqc.rev <- gsub('R1.html', 'R2.html', multiqc.fwd) |> 
+		gsub('Forward', 'Reverse', x = _) |> 
+		gsub('R1_fastqc.zip', 'R2_fastqc.zip', x = _)
 
 system2('multiqc', args = multiqc.fwd)
 system2('multiqc', args = multiqc.rev)
@@ -123,7 +122,7 @@ track <- cbind(sapply(dada.fwd, get.n),
 
 log <- left_join(trim.summary, track, by = 'sample')
 colnames(log) <- c('sample', 'input', 'filtered', 'denoised.fwd', 'denoised.rev', 'merged')
-file.path('logs', '03-denoise-dada2.rds') %>% saveRDS(log, .)
+file.path('logs', '03-denoise-dada2.rds') |> saveRDS(log, file = _)
 
 # Remove the scratch directory ####
 unlink('scratch', recursive = T)
