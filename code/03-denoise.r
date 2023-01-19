@@ -28,11 +28,13 @@ library(tibble)
 library(stringr)
 library(dplyr)
 
-# Make path for denoising output ####
+# Create output directories ####
 out <- '03-denoise'
 unlink(out, recursive = T)
 dir.create(out)
 system(paste('touch', file.path(out, 'README.md')))
+unlink('scratch', recursive = T)
+dir.create('scratch')
 
 # Read in forward and reverse reads ####
 in.path <- '02-trim'
@@ -43,9 +45,6 @@ in.rev <- in.path |> list.files(pattern = '.R2.fq.gz', full.names = T) |> sort()
 filt <- file.path(out, 'filter')
 filt.fwd <- gsub(in.path, filt, in.fwd)
 filt.rev <- gsub(in.path, filt, in.rev)
-
-# Make paths for scratch output ####
-dir.create('scratch')
 
 # Trim and quality filter ####
 trim <- filterAndTrim(in.fwd, filt.fwd,

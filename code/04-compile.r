@@ -91,6 +91,7 @@ out <- '04-compile'
 unlink(out, recursive = T)
 dir.create(out)
 system(paste('touch', file.path(out, 'README.md')))
+unlink('scratch', recursive = T)
 dir.create('scratch')
 
 # Load inputs ####
