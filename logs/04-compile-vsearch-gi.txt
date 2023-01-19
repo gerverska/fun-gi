@@ -1,10 +1,10 @@
-vsearch v2.22.1_linux_x86_64, 15.3GB RAM, 12 cores
-vsearch --usearch_global scratch/vsearch-gi.fa --db scratch/vsearch-gi.fa --self --id 0.84 --strand plus --iddef 1 --threads 8 --userout scratch/matchlist-gi.txt --log logs/04-compile-vsearch-gi.txt --userfields query+target+id --maxaccepts 0 --query_cov 0.9 --maxhits 10
-Started  Thu Jan 19 10:45:11 2023
+vsearch v2.22.1_linux_x86_64, 503.7GB RAM, 64 cores
+vsearch --usearch_global scratch/vsearch-gi.fa --db scratch/vsearch-gi.fa --self --id 0.84 --strand plus --iddef 1 --threads 16 --userout scratch/matchlist-gi.txt --log logs/04-compile-vsearch-gi.txt --userfields query+target+id --maxaccepts 0 --query_cov 0.9 --maxhits 10
+Started  Thu Jan 19 11:47:08 2023
 1287 nt in 3 seqs, min 429, max 429, avg 429
 
 Matching unique query sequences: 3 of 3 (100.00%)
 
-Finished Thu Jan 19 10:45:11 2023
-Elapsed time 00:00
-Max memory 13.7MB
+Finished Thu Jan 19 11:47:10 2023
+Elapsed time 00:02
+Max memory 1.6GB
