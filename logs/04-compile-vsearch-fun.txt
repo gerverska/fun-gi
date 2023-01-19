@@ -1,10 +1,10 @@
-vsearch v2.22.1_linux_x86_64, 1007.6GB RAM, 128 cores
-vsearch --usearch_global scratch/vsearch-fun.fa --db scratch/vsearch-fun.fa --self --id 0.96 --strand plus --iddef 1 --threads 16 --userout scratch/matchlist-fun.txt --log logs/04-compile-vsearch-fun.txt --userfields query+target+id --maxaccepts 0 --query_cov 0.9 --maxhits 10
-Started  Wed Jan 18 20:46:40 2023
+vsearch v2.22.1_linux_x86_64, 15.3GB RAM, 12 cores
+vsearch --usearch_global scratch/vsearch-fun.fa --db scratch/vsearch-fun.fa --self --id 0.96 --strand plus --iddef 1 --threads 8 --userout scratch/matchlist-fun.txt --log logs/04-compile-vsearch-fun.txt --userfields query+target+id --maxaccepts 0 --query_cov 0.9 --maxhits 10
+Started  Thu Jan 19 10:44:00 2023
 1552 nt in 5 seqs, min 309, max 316, avg 310
 
 Matching unique query sequences: 4 of 5 (80.00%)
 
-Finished Wed Jan 18 20:46:40 2023
+Finished Thu Jan 19 10:44:00 2023
 Elapsed time 00:00
-Max memory 671.8MB
+Max memory 12.3MB
