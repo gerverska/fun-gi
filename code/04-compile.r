@@ -140,14 +140,17 @@ taxa <- assignTaxonomy(fun.lulu$seq,
 
 # Add taxonomic information and metadata to the fungal output ####
 tax <- taxa$tax |> as.data.frame()
+boot <- taxa$boot |> as.data.frame()
 trim.tax <- lapply(tax, gsub, pattern="^[[:alpha:]]_.", replacement='') |> data.frame()
-rownames(trim.tax) <- names(fun.lulu$seq)
 
-fun.lulu$tax <- tax
+rownames(trim.tax) <- names(fun.lulu$seq)
+rownames(boot) <- names(fun.lulu$seq)
+
+fun.lulu$tax <- trim.tax
 fun.lulu$meta <- meta
 
 # Write a log of the bootstrap support for the taxonomic assignments ####
-file.path('logs', '04-compile-assign.rds') |> saveRDS(taxa$boot, file = _)
+file.path('logs', '04-compile-assign.rds') |> saveRDS(boot, file = _)
 
 # Perform LULU post-clustering on the Gigantea subset ####
 gi.tab <- seq.tab[rownames(seq.tab) %in% gi.samp, ]
@@ -162,6 +165,7 @@ gi.lulu <- lulu.clust(tab = gi.tab, seq = gi.seq, multi = threads, name = 'gi', 
 
 gi.lulu$meta <- meta
 
+# Combine the fungal and Gigantea objects before output ####
 fun.gi <- list(fun = fun.lulu,
                gi = gi.lulu)
 
