@@ -104,7 +104,7 @@ dada.rev <- dada(derep.rev, err = err.rev, multithread = threads, pool = 'pseudo
 # Merge forward and reverse reads and make a sequence table ####
 merged <- mergePairs(dada.fwd, derep.fwd, dada.rev, derep.rev, trimOverhang = T)
 seq.tab <- merged |> makeSequenceTable()
-file.path(out, '03-denoise-seq-tab.rds') %>% saveRDS(seq.tab, .)
+file.path(out, 'seq-tab.rds') %>% saveRDS(seq.tab, .)
 
 # Make a summary log ####
 get.n <- function(x){

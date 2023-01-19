@@ -60,6 +60,7 @@ lulu.clust <- function(tab, seq, multi = threads, name, min.match = 0.97){
                            '--iddef 1',
                            '--threads', multi,
                            '--userout', file.path('scratch', paste0('matchlist-', name, '.txt')),
+                           '--log', file.path('logs', paste0('04-compile-vsearch-', name, '.txt')),
                            '--userfields query+target+id',
                            '--maxaccepts 0',
                            '--query_cov 0.9',
@@ -73,7 +74,6 @@ lulu.clust <- function(tab, seq, multi = threads, name, min.match = 0.97){
     
     # Use LULU to make a curation object and update the OTU table and sequences ####
     curation <- lulu(t.nochim.tab, matchlist, minimum_match = (min.match * 100))
-    file.path(out, paste0('lulu-', name, '.rds')) |> saveRDS(curation, file = _)
     lulu.tab <- curation$curated_table |> t() |> as.data.frame()
     lulu.seq <- nochim.seq[names(nochim.seq) %in% curation$curated_otus]
     
@@ -91,19 +91,17 @@ out <- '04-compile'
 unlink(out, recursive = T)
 dir.create(out)
 system(paste('touch', file.path(out, 'README.md')))
-unlink('scratch', recursive = T) # remove once finalized
 dir.create('scratch')
 
 # Load inputs ####
-meta <- read.csv(file.path('data', 'meta.csv')) # change to have rds input
-seq.tab <- readRDS(file.path('03-denoise', '03-denoise-seq-tab.rds')) # change the input to have shorter name
+meta <- read.csv(file.path('data', 'meta.csv')) # Change csv to rds!!!
+seq.tab <- readRDS(file.path('03-denoise', 'seq-tab.rds'))
 
-# Define ITS2 and Gigantea samples ####
+# Define fungal and Gigantea samples ####
 fun.samp <- meta$fun_id |> unique()
 gi.samp <- meta$gi_id |> unique()
 
 # Extract the ITS2 dataset from the DADA2 output ####
-# fun.tab <- seq.tab[grepl('gi', rownames(seq.tab)) == F, ]
 fun.tab <- seq.tab[rownames(seq.tab) %in% fun.samp, ]
 fun.tab <- fun.tab[, colSums(fun.tab) > 0]
 
@@ -113,37 +111,44 @@ fun.seq <- getSequences(fun.tab) |> DNAStringSet()
 names(fun.seq) <- fun.otus
 colnames(fun.tab) <- fun.otus
 
-# Identify ASVs with complete ITS2 sequences ####
+# Identify ASVs with complete fungal sequences ####
 writeXStringSet(fun.seq, file = file.path('scratch', 'itsx.fa'))
 
 itsx.flags <- paste('-i', file.path('scratch', 'itsx.fa'),
                     '-t "fungi,tracheophyta"',
                     '--preserve T',
                     '--cpu', threads, 
-                    '-o', file.path(out, 'itsx'),
+                    '-o', file.path('logs', '04-compile-itsx'),
                     '--only_full T')
 system2('ITSx', args = itsx.flags)
 
-# Remove ASVs with incomplete ITS2 sequences ####
-itsx.otus <- readDNAStringSet(file.path(out, 'itsx.ITS2.fasta')) |> names()
+# Remove ASVs with incomplete fungal sequences ####
+itsx.otus <- readDNAStringSet(file.path('logs', '04-compile-itsx.ITS2.fasta')) |> names()
 itsx.seq <- fun.seq[names(fun.seq) %in% itsx.otus]
 itsx.tab <- fun.tab[, names(itsx.seq)]
 
-# Perform LULU post-clustering on the ITS2 subset ####
-fun.lulu <- lulu.clust(tab = itsx.tab, seq = itsx.seq, multi = threads, name = 'fun', min.match = 0.95)
+# Perform LULU post-clustering on the fungal subset ####
+fun.lulu <- lulu.clust(tab = itsx.tab, seq = itsx.seq, multi = threads, name = 'fun', min.match = 0.97)
 
-# Predict ITS2 OTU taxonomy ####
-tax <- assignTaxonomy(fun.lulu$seq,
-                      file.path('data', '1AC1288ECCCC67B566050AEEF93A8CC298337B408A24C3E49E17ED28A33AE1BB.gz'),
-                      multithread = threads)
+# Predict fungal OTU taxonomy ####
+taxa <- assignTaxonomy(fun.lulu$seq,
+                       file.path('data', 'sh_general_release_dynamic_all_psme-noga_29.11.2022.fasta.gz'), # Potentially update with _s_ version!!!
+                       tryRC = T,
+                       multithread = threads,
+                       outputBootstraps = T)
 
-rownames(tax) <- names(fun.lulu$seq)
+# Add taxonomic information and metadata to the fungal output ####
+tax <- taxa$tax |> as.data.frame()
+trim.tax <- lapply(tax, gsub, pattern="^[[:alpha:]]_.", replacement='') |> data.frame()
+rownames(trim.tax) <- names(fun.lulu$seq)
 
 fun.lulu$tax <- tax
 fun.lulu$meta <- meta
 
+# Write a log of the bootstrap support for the taxonomic assignments ####
+file.path('logs', '04-compile-assign.rds') |> saveRDS(taxa$boot, file = _)
+
 # Perform LULU post-clustering on the Gigantea subset ####
-# gi.tab <- seq.tab[grepl('fun', rownames(seq.tab)) == F, ]
 gi.tab <- seq.tab[rownames(seq.tab) %in% gi.samp, ]
 gi.tab <- gi.tab[, colSums(gi.tab) > 0]
 
@@ -152,7 +157,7 @@ gi.seq <- getSequences(gi.tab) |> DNAStringSet()
 names(gi.seq) <- gi.otus
 colnames(gi.tab) <- gi.otus
 
-gi.lulu <- lulu.clust(tab = gi.tab, seq = gi.seq, multi = threads, name = 'gi', min.match = 0.95)
+gi.lulu <- lulu.clust(tab = gi.tab, seq = gi.seq, multi = threads, name = 'gi', min.match = 0.85)
 
 gi.lulu$meta <- meta
 

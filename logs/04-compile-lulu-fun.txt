@@ -23,29 +23,22 @@ No parent found!
 
 ####processing: OTU.4 #####
 ---hits: OTU.1 
----hits: OTU.2 
----hits: OTU.5
+---hits: OTU.2
 ---potential parent: OTU.1 
----potential parent: OTU.2 
----potential parent: OTU.5
+---potential parent: OTU.2
 ------checking: OTU.1
 ------relative cooccurence: 1 which is sufficient!
 ------min avg abundance: 104.486486486486 which is OK!
 SETTING OTU.4 to be an ERROR of OTU.1
 
 ------checking: OTU.2
-------checking: OTU.5
 ####processing: OTU.5 #####
 ---hits: OTU.1 
----hits: OTU.2 
----hits: OTU.4
+---hits: OTU.2
 ---potential parent: OTU.1 
----potential parent: OTU.2 
----potential parent: OTU.4
+---potential parent: OTU.2
 ------checking: OTU.1
 ------relative cooccurence: 0
 ------checking: OTU.2
-------relative cooccurence: 0
-------checking: OTU.4
 ------relative cooccurence: 0
 No parent found!
