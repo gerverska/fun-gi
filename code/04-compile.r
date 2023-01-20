@@ -39,7 +39,7 @@ lulu.clust <- function(tab, seq, multi = threads, name, min.match = 0.97){
                                      verbose = T)
     
     # Reassign OTU names ####
-    nochim.otus <- paste0(name, '-OTU.', 1:ncol(nochim.tab))
+    nochim.otus <- paste0(name, '_OTU.', 1:ncol(nochim.tab))
     nochim.seq <- getSequences(nochim.tab) |> DNAStringSet()
     names(nochim.seq) <- nochim.otus
     colnames(nochim.tab) <- nochim.otus
