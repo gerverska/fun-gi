@@ -1,3 +1,5 @@
+# Rarefy the data to reduce the influence of read depth on results ####
+
 # Accept an argument for the number of threads and check it for validity ####
 threads <- commandArgs(T) |> as.integer()
 
@@ -148,7 +150,7 @@ stat.long <- reshape(stat.tab,
 # Summarize each statistic for each sample using the subsamples ####
 calc <- by(stat.long,
            INDICES = list(stat.long$combo, stat.long$stat),
-           FUN = function(x){data.frame(id = unique(x$combo),
+           FUN = function(x){data.frame(combo = unique(x$combo),
                                         stat = unique(x$stat),
                                         mean = mean(x$value),
                                         sd = sd(x$value))
@@ -157,8 +159,16 @@ calc <- by(stat.long,
 # Widen the dataframe to equalize the number of rows and number of samples ####
 calc.wide <- reshape(calc,
                      direction = 'wide', timevar = 'stat',
-                     idvar = 'id',
+                     idvar = 'combo',
                      sep = '_')
 
+# Combine the rarefied output and the full metadata into a single dataframe ####
+meta <- merge(full, calc.wide, by = 'combo', all = T)
+fun.gi.rare <- list(meta = meta,
+                    fun_seq = fun.gi$fun$seq,
+                    tax = fun.gi$fun$tax,
+                    boot = fun.gi$fun$boot,
+                    gi_seq = fun.gi$gi$seq)
+
 # Write the object out to an .rds file ####
-file.path(out, 'fun-gi-rare.rds') |> saveRDS(calc.wide, file = _)
+file.path(out, 'fun-gi-rare.rds') |> saveRDS(fun.gi.rare, file = _)
