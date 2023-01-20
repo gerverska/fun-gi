@@ -55,7 +55,7 @@ rarefy <- function(x, depth, subsamples, replicas){
 }
 
 # Create output directories ####
-out <- '05-analyze'
+out <- '05-rarefy'
 unlink(out, recursive = T)
 dir.create(out)
 system(paste('touch', file.path(out, 'README.md')))
