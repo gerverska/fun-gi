@@ -85,7 +85,7 @@ full.tab[is.na(full.tab) == T] <- 0
 full[, otus] <- full.tab
 
 # Remove samples beneath target sequencing depth prior to rarefaction ####
-depth <- 500 # Need to show how we got at this number!!!
+depth <- 750 # Need to show how we got at this number!!!
 
 full$reads <- subset(full, select = otus) |> rowSums()
 filt <- full |> subset(x = _, reads >= depth)
