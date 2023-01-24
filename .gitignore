@@ -1,5 +1,4 @@
 env
-renv
 data/raw
 logs/*_data
 scratch
