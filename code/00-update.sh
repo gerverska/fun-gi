@@ -1,7 +1,4 @@
-# Update the conda environment and R package space according to state files ####
+# Update the conda environment according to the configuration file ####
 
 # conda ####
-conda env update -p ./env -f conda.yml
-
-# R ####
-R -e 'renv::restore(prompt = F)'
+conda env update -p ./env -f env.yml

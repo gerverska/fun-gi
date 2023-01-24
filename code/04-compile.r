@@ -22,7 +22,7 @@ if(threads < 1){
 }
 
 # Load packages ####
-library(lulu)
+library(lulu) # Need to see how to download this through conda
 library(Biostrings)
 library(dada2)
 

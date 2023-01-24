@@ -1,9 +1,4 @@
 #!/bin/bash
 
-# Record the current states of the conda environment and R package space ####
-
-# conda ####
-conda env export --from-history > conda.yml
-
-# R ####
-R -e 'renv::snapshot()'
+# Record the current state of the conda environment ####
+conda env export --from-history > env.yml

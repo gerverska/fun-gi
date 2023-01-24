@@ -22,11 +22,8 @@ if(threads < 1){
 }
 
 # Load packages ####
+library(ggplot2) # Should be imported by dada2, but I also thought this about BioStrings...
 library(dada2)
-library(ggplot2)
-library(tibble)
-library(stringr)
-library(dplyr)
 
 # Create output directories ####
 out <- '03-denoise'
@@ -110,15 +107,17 @@ get.n <- function(x){
 	sum(getUniques(x))
 }
 
-trim.summary <- trim |> data.frame() |> rownames_to_column('sample')
-trim.summary$sample <- str_remove(trim.summary$sample, '-rc-R1.fq.gz')
+trim.summary <- trim |> data.frame()
+trim.summary$sample <- rownames(trim.summary)
+trim.summary$sample <- gsub('-rc-R1.fq.gz', '', trim.summary$sample)
 
 track <- cbind(sapply(dada.fwd, get.n),
                sapply(dada.rev, get.n),
                sapply(merged, get.n)) |>
-		data.frame() |>
-		rownames_to_column('sample')
+		data.frame()
+track$sample <- rownames(track)
 
+log <- merge(trim.summary, track, by = 'sample', all.x = T) # We might not need the "all.x = T" !!!
 log <- left_join(trim.summary, track, by = 'sample')
 colnames(log) <- c('sample', 'input', 'filtered', 'denoised.fwd', 'denoised.rev', 'merged')
 file.path('logs', '03-denoise-dada2.rds') |> saveRDS(log, file = _)

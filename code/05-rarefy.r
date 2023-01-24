@@ -127,19 +127,15 @@ fun.otus <- colnames(wide.tab)[grepl('funOTU', colnames(wide.tab)) == T]
 # Calculate statistics for each subsample ####
 wide.tab$noga_ra <- wide.tab$funOTU.1 / depth
 wide.tab$noga_load <- wide.tab$funOTU.1 / wide.tab$giOTU.1
-wide.tab$noga_root <- wide.tab$noga_load^(1/4)
-wide.tab$noga_log <- wide.tab$noga_load |> log()
 
 wide.tab$fun_ra <- rowSums(wide.tab[, fun.otus]) / depth
 wide.tab$fun_load <- rowSums(wide.tab[, fun.otus]) / wide.tab$giOTU.1
-wide.tab$fun_root <- wide.tab$fun_load^(1/4)
-wide.tab$fun_log <- wide.tab$fun_load |> log()
 
 stat.tab <- wide.tab[!(colnames(wide.tab) %in% otus)]
 stat.tab$combo <- wide$combo
 stat.tab$iteration <- wide$iteration
 
-stats <- colnames(stat.tab)[grepl("ra$|load$|root$|log$", colnames(stat.tab)) == T]
+stats <- colnames(stat.tab)[grepl("ra$|load$", colnames(stat.tab)) == T]
 
 # Lengthen the dataframe to make summarization simpler ####
 stat.long <- reshape(stat.tab,
