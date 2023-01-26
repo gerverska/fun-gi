@@ -120,8 +120,7 @@ track <- cbind(sapply(dada.fwd, get.n),
 		data.frame()
 track$sample <- rownames(track)
 
-log <- merge(trim.summary, track, by = 'sample', all.x = T) # We might not need the "all.x = T" !!!
-log <- left_join(trim.summary, track, by = 'sample')
+log <- merge(trim.summary, track, by = 'sample', all.x = T)
 colnames(log) <- c('sample', 'input', 'filtered', 'denoised.fwd', 'denoised.rev', 'merged')
 file.path('logs', '03-denoise-dada2.rds') |> saveRDS(log, file = _)
 
