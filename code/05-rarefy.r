@@ -21,6 +21,9 @@ if(threads < 1){
     cat(threads, 'threads requested', '\n')
 }
 
+# Load packages ####
+library(ggplot2)
+
 # Load functions ####
 read.count <- function(x, otus, subsample) {
     # Count OTU reads ####
@@ -56,6 +59,11 @@ rarefy <- function(x, depth, subsamples, replicas){
     out
 }
 
+# Set palette ####
+color.pal <- c('#000000', '#E69F00', '#56B4E9',
+               '#009E73', '#F0E442', '#0072B2',
+               '#D55E00', '#CC79A7')
+
 # Create output directories ####
 out <- '05-rarefy'
 unlink(out, recursive = T)
@@ -77,17 +85,43 @@ full <- merge(full, gi.tab, by = 'gi_id', all = T)
 full$combo <- paste(full$tags, full$fun_n, full$gi_n, sep = '-') # Ideally fix some of this upstream!!!
 colnames(full) <- colnames(full) |> gsub('-', '', x = _) # Ideally fix this upstream!!!
 
-# Convert NA values post merge ####
+# Convert NA values post-merge and sum all reads ####
 otus <- colnames(full)[grepl('OTU', colnames(full))]
 
 full.tab <- full[, otus]
 full.tab[is.na(full.tab) == T] <- 0
 full[, otus] <- full.tab
+full$reads <- subset(full, select = otus) |> rowSums()
+
+# Examine whether sequencing depth, dilution treatments, and/or frameshift codes are correlated ####
+standard <- full |> subset(template == 'standard')
+
+bias <- ggplot(standard, aes(x = log10(dilution), y = log10(reads)
+                     )) +
+    geom_point(aes(color = fun_n, shape = gi_n), size = 3) +
+    scale_x_continuous(n.breaks = 9) +
+    scale_y_continuous(n.breaks = 8) +
+    xlab('\nLog-transformed NOGA dilution ( prop. NOGA gDNA )') +
+    ylab('Log-transformed read depth\n') +
+    labs(color = 'Fun frameshift',
+         shape = 'Gi frameshift') +
+    scale_color_manual(values = color.pal) +
+    theme_classic() +
+    theme(panel.border = element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          text = element_text(size = 14),
+          axis.line = element_line(colour = 'black'),
+          axis.text.x = element_text(angle = 45, vjust = 0.5),
+          axis.title.x = element_text(face = 'bold'),
+          axis.title.y = element_text(face = 'bold'),
+          legend.position = 'none')
+
+file.path(out, 'dilution-bias.png') |> ggsave(bias)
 
 # Remove samples beneath target sequencing depth prior to rarefaction ####
 depth <- 750 # Need to show how we got at this number!!!
 
-full$reads <- subset(full, select = otus) |> rowSums()
 filt <- full |> subset(x = _, reads >= depth)
 filt.tab <- filt[, otus]
 filt.tab$combo <- filt$combo

@@ -1,5 +1,6 @@
+# Determine the viability of hamPCR ####
+
 # Load packages ####
-library(cowplot)
 library(ggplot2)
 library(nlme)
 
@@ -24,21 +25,6 @@ meta$gi_n <- meta$gi_n |> gsub("_gi_fwd|_gi_rev", '', x = _) |> gsub('n', 'N', x
 
 standard <- subset(meta, template == 'standard')
 dfssmt <- subset(meta, template == 'dfssmt')
-
-# Examine whether sequencing depth, dilution treatments, and/or frameshift codes are correlated ####
-depth <- ggplot(standard, aes(x = log10(dilution), y = log10(reads)
-                           )) +
-    geom_point(aes(color = fun_n, shape = gi_n), size = 3) +
-    scale_x_continuous(n.breaks = 9) +
-    scale_y_continuous(n.breaks = 8) +
-    xlab('\nLog-transformed NOGA dilution ( prop. NOGA gDNA )') +
-    ylab('Total reads\n') +
-    scale_color_manual(values = color.pal) +
-    theme_cowplot() +
-    theme(axis.text.x = element_text(angle = 45, vjust = 0.5),
-          axis.title.x = element_text(face = 'bold'),
-          axis.title.y = element_text(face = 'bold'),
-          legend.position = 'none')
 
 # Design a full model, including frameshifts as random effects ####
 full <- lme(log10(mean_noga_load) ~ log10(dilution),
@@ -67,41 +53,60 @@ base |> residuals() |> qqline()
 # Test whether the full and base models are similar to each other ####
 test <- anova(full, base) |> data.frame()
 
+# Extract model summary ####
+summ <- base |> summary()
+
 # Add model residuals to the standard dataframe ####
 res <- data.frame(res = base$residuals)
 res$combo <- rownames(res)
 standard <- merge(standard, res, by = 'combo', all.x = T)
+
+dfssmt.stats <- data.frame(stat = c('minimum', 'mean', 'maximum'),
+                           value = c(min(log10(dfssmt$mean_noga_load), na.rm = T),
+                                     mean(log10(dfssmt$mean_noga_load), na.rm = T),
+                                     max(log10(dfssmt$mean_noga_load), na.rm = T)
+                                     ))
+                                      
 
 # Plot the relationship between load and the dilution ratio ####
 load <- ggplot(standard, aes(x = log10(dilution), y = log10(mean_noga_load)
                            )) +
     geom_point(aes(color = fun_n, shape = gi_n), size = 3) +
     stat_smooth(method = 'lm') +
-    geom_hline(yintercept = min(log10(dfssmt$mean_noga_load), na.rm = T), linetype = 'dotted') +
-    geom_hline(yintercept = mean(log10(dfssmt$mean_noga_load), na.rm = T), linetype = 'dashed') +
-    geom_hline(yintercept = max(log10(dfssmt$mean_noga_load), na.rm = T), linetype = 'solid') +
+    geom_hline(aes(yintercept = value, linetype = stat), dfssmt.stats) +
     scale_x_continuous(n.breaks = 9) +
     scale_y_continuous(n.breaks = 6) +
     xlab('\nLog-transformed NOGA dilution ( prop. NOGA gDNA )') +
     ylab('Log-transformed NOGA load\n') +
-    labs(color = 'Fun frameshift', shape = 'Gi frameshift') +
+    labs(color = 'Fun frameshift',
+         shape = 'Gi frameshift',
+         linetype = 'DFSSMT sample') +
     guides(color = guide_legend(order = 1), 
-           shape = guide_legend(order = 2)) +
-    theme_cowplot() +
+           shape = guide_legend(order = 2),
+           linetype = guide_legend(order = 3)) +
     scale_color_manual(values = color.pal) +
-    theme(axis.text.x = element_text(angle = 45, vjust = 0.5),
+    theme_classic() +
+    theme(text = element_text(size = 14),
+          axis.text.x = element_text(angle = 45, vjust = 0.5),
           axis.title.x = element_text(face = 'bold'),
           axis.title.y = element_text(face = 'bold'),
           legend.title = element_text(face = 'bold'))
 
+file.path(out, 'dilution-load.png') |> ggsave(load)
+
 # Plot the relationship between frameshift pairs and model residuals ####
+set.seed(666)
 shifts <- ggplot(standard, aes(x = fun_n, y = gi_n, color = res)) +
     geom_jitter(size = 3, width = 0.15, height = 0.1, alpha = 0.75) +
     xlab('\nFun frameshift') +
     ylab('Gi frameshift\n') +
     labs(color = 'Residuals') +
-    theme_cowplot() +
-    theme(axis.text.x = element_text(angle = 45, vjust = 0.5),
+    scale_color_viridis_c() +
+    theme_classic() +
+    theme(text = element_text(size = 14),
+          axis.text.x = element_text(angle = 45, vjust = 0.5),
           axis.title.x = element_text(face = 'bold'),
           axis.title.y = element_text(face = 'bold'),
           legend.title = element_text(face = 'bold'))
+
+file.path(out, 'frameshift-residuals.png') |> ggsave(shifts)
