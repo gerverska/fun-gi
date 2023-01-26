@@ -15,6 +15,5 @@ dependencies:
   - cutadapt=4.2
   - vsearch=2.22.1
   - bioconductor-dada2=1.26.0
-  - r-cowplot=1.1.1
   - r-remotes=2.4.2
 prefix: /home/gerverska/projects/fun-gi/env
