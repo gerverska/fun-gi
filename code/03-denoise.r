@@ -98,7 +98,10 @@ dada.fwd <- dada(derep.fwd, err = err.fwd, multithread = threads, pool = 'pseudo
 dada.rev <- dada(derep.rev, err = err.rev, multithread = threads, pool = 'pseudo')
 
 # Merge forward and reverse reads and make a sequence table ####
-merged <- mergePairs(dada.fwd, derep.fwd, dada.rev, derep.rev, trimOverhang = T)
+merged <- mergePairs(dada.fwd, derep.fwd,
+                     dada.rev, derep.rev,
+                     trimOverhang = T,
+                     minOverlap = 10)
 seq.tab <- merged |> makeSequenceTable()
 file.path(out, 'seq-tab.rds') %>% saveRDS(seq.tab, .)
 
