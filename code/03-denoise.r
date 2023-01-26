@@ -103,7 +103,7 @@ merged <- mergePairs(dada.fwd, derep.fwd,
                      trimOverhang = T,
                      minOverlap = 10)
 seq.tab <- merged |> makeSequenceTable()
-file.path(out, 'seq-tab.rds') %>% saveRDS(seq.tab, .)
+file.path(out, 'seq-tab.rds') |> saveRDS(seq.tab, file = _)
 
 # Make a summary log ####
 get.n <- function(x){
