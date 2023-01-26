@@ -1,27 +1,27 @@
 
-####processing: gi-OTU.1 #####
----hits: gi-OTU.2 
----hits: gi-OTU.3
+####processing: gi_OTU.1 #####
+---hits: gi_OTU.2 
+---hits: gi_OTU.3
 ---potential parent: 
 No parent found!
 
-####processing: gi-OTU.2 #####
----hits: gi-OTU.1 
----hits: gi-OTU.3
----potential parent: gi-OTU.1
-------checking: gi-OTU.1
+####processing: gi_OTU.2 #####
+---hits: gi_OTU.1 
+---hits: gi_OTU.3
+---potential parent: gi_OTU.1
+------checking: gi_OTU.1
 ------relative cooccurence: 1 which is sufficient!
 ------min avg abundance: 3.83628318584071 which is OK!
-SETTING gi-OTU.2 to be an ERROR of gi-OTU.1
+SETTING gi_OTU.2 to be an ERROR of gi_OTU.1
 
-####processing: gi-OTU.3 #####
----hits: gi-OTU.1 
----hits: gi-OTU.2
----potential parent: gi-OTU.1 
----potential parent: gi-OTU.2
-------checking: gi-OTU.1
+####processing: gi_OTU.3 #####
+---hits: gi_OTU.1 
+---hits: gi_OTU.2
+---potential parent: gi_OTU.1 
+---potential parent: gi_OTU.2
+------checking: gi_OTU.1
 ------relative cooccurence: 1 which is sufficient!
 ------min avg abundance: 10.9770114942529 which is OK!
-SETTING gi-OTU.3 to be an ERROR of gi-OTU.1
+SETTING gi_OTU.3 to be an ERROR of gi_OTU.1
 
-------checking: gi-OTU.2
+------checking: gi_OTU.2
