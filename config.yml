@@ -16,4 +16,5 @@ dependencies:
   - vsearch=2.22.1
   - bioconductor-dada2=1.26.0
   - r-remotes=2.4.2
+  - r-dplyr=1.0.10
 prefix: /home/gerverska/projects/fun-gi/env
