@@ -5,6 +5,7 @@ color.pal <- c('#000000', '#E69F00', '#56B4E9',
 
 # 04-compile.r ####
 lulu.clust <- function(tab, seq, multi = threads, name, min.match = 0.97){
+    
     # Collapse identical ASVs ####
     colnames(tab) <- seq |> as.character() |> unname()
     unique.tab <- collapseNoMismatch(tab)

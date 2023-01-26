@@ -21,10 +21,13 @@ if(threads < 1){
     cat(threads, 'threads requested', '\n')
 }
 
+# Install the lulu github package ####
+remotes::install_github('gerverska/lulu@v1.0.0', dependencies = F)
+
 # Load packages ####
-library(lulu) # Need to see how to download this through conda!!!
 library(Biostrings)
 library(dada2)
+library(lulu) # Need to see how to download this through conda!!!
 
 # Load functions ####
 source(file.path('code', '00-functions.r'))
@@ -78,7 +81,7 @@ fun.lulu <- lulu.clust(tab = itsx.tab, seq = itsx.seq, multi = threads, name = '
 set.seed(666)
 taxa <- assignTaxonomy(fun.lulu$seq,
                        file.path('data', 'sh_general_release_dynamic_all_psme-noga_29.11.2022.fasta.gz'), # Potentially update with _s_ version!!!
-                       minBoot = 75,
+                       minBoot = 80,
                        tryRC = T,
                        multithread = threads,
                        outputBootstraps = T)

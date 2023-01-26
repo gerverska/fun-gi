@@ -1,44 +1,44 @@
 
-####processing: fun-OTU.1 #####
----hits: fun-OTU.2 
----hits: fun-OTU.4 
----hits: fun-OTU.5
+####processing: fun_OTU.1 #####
+---hits: fun_OTU.2 
+---hits: fun_OTU.4 
+---hits: fun_OTU.5
 ---potential parent: 
 No parent found!
 
-####processing: fun-OTU.2 #####
----hits: fun-OTU.1 
----hits: fun-OTU.4 
----hits: fun-OTU.5
----potential parent: fun-OTU.1
-------checking: fun-OTU.1
+####processing: fun_OTU.2 #####
+---hits: fun_OTU.1 
+---hits: fun_OTU.4 
+---hits: fun_OTU.5
+---potential parent: fun_OTU.1
+------checking: fun_OTU.1
 ------relative cooccurence: 1 which is sufficient!
 ------min avg abundance: 33 which is OK!
-SETTING fun-OTU.2 to be an ERROR of fun-OTU.1
+SETTING fun_OTU.2 to be an ERROR of fun_OTU.1
 
-####processing: fun-OTU.3 #####
+####processing: fun_OTU.3 #####
 ---hits: 
 ---potential parent: 
 No parent found!
 
-####processing: fun-OTU.4 #####
----hits: fun-OTU.1 
----hits: fun-OTU.2
----potential parent: fun-OTU.1 
----potential parent: fun-OTU.2
-------checking: fun-OTU.1
+####processing: fun_OTU.4 #####
+---hits: fun_OTU.1 
+---hits: fun_OTU.2
+---potential parent: fun_OTU.1 
+---potential parent: fun_OTU.2
+------checking: fun_OTU.1
 ------relative cooccurence: 1 which is sufficient!
 ------min avg abundance: 104.486486486486 which is OK!
-SETTING fun-OTU.4 to be an ERROR of fun-OTU.1
+SETTING fun_OTU.4 to be an ERROR of fun_OTU.1
 
-------checking: fun-OTU.2
-####processing: fun-OTU.5 #####
----hits: fun-OTU.1 
----hits: fun-OTU.2
----potential parent: fun-OTU.1 
----potential parent: fun-OTU.2
-------checking: fun-OTU.1
+------checking: fun_OTU.2
+####processing: fun_OTU.5 #####
+---hits: fun_OTU.1 
+---hits: fun_OTU.2
+---potential parent: fun_OTU.1 
+---potential parent: fun_OTU.2
+------checking: fun_OTU.1
 ------relative cooccurence: 0
-------checking: fun-OTU.2
+------checking: fun_OTU.2
 ------relative cooccurence: 0
 No parent found!
