@@ -4,10 +4,8 @@
 library(ggplot2)
 library(nlme)
 
-# Set palette ####
-color.pal <- c('#000000', '#E69F00', '#56B4E9',
-               '#009E73', '#F0E442', '#0072B2',
-               '#D55E00', '#CC79A7')
+# Load functions ####
+source(file.path('code', '00-functions.r'))
 
 # Create output directories ####
 out <- '06-analyze'
@@ -52,15 +50,18 @@ base |> residuals() |> qqline()
 
 # Test whether the full and base models are similar to each other ####
 test <- anova(full, base) |> data.frame()
+file.path(out, 'anova.rds') |> saveRDS(test, file = _)
 
 # Extract model summary ####
 summ <- base |> summary()
+file.path(out, 'summary.rds') |> saveRDS(summ, file = _)
 
-# Add model residuals to the standard dataframe ####
+# Add model residuals to the "standard" dataframe ####
 res <- data.frame(res = base$residuals)
 res$combo <- rownames(res)
 standard <- merge(standard, res, by = 'combo', all.x = T)
 
+# Calculate the minimum, mean, and maximum NOGA load obtained from the DFSSMT samples ####
 dfssmt.stats <- data.frame(stat = c('minimum', 'mean', 'maximum'),
                            value = c(min(log10(dfssmt$mean_noga_load), na.rm = T),
                                      mean(log10(dfssmt$mean_noga_load), na.rm = T),

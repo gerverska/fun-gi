@@ -25,44 +25,7 @@ if(threads < 1){
 library(ggplot2)
 
 # Load functions ####
-read.count <- function(x, otus, subsample) {
-    # Count OTU reads ####
-    data.frame(OTU = otus[x],
-               reads = length(subsample[subsample %in% otus[x] == T]))
-}
-resample <- function(x, samp, depth){
-    # Randomly sample reads for a sample ####
-    subsample <- sample(samp$OTU, size = depth, replace = F)
-    
-    # Figure out which OTUs are present in the sample and how many there are ####
-    otus <- unique(subsample)
-    rich <- length(otus)
-    
-    # Obtain read counts for each OTU ####
-    counts <- lapply(1:rich, read.count, otus = otus, subsample = subsample)
-    
-    # Combine count output into a single dataframe ####
-    out <- do.call('rbind', counts)
-    out$iteration <- x
-    out
-}
-rarefy <- function(x, depth, subsamples, replicas){
-    # Subset reads belonging to a given sample ####
-    samp <- subset(replicas, combo == x)
-    
-    # Sub-sample these reads several times ####
-    rare <- lapply(1:subsamples, resample, samp = samp, depth = depth)
-    
-    # Combine all the output ####
-    out <- do.call('rbind', rare)
-    out$combo <- x
-    out
-}
-
-# Set palette ####
-color.pal <- c('#000000', '#E69F00', '#56B4E9',
-               '#009E73', '#F0E442', '#0072B2',
-               '#D55E00', '#CC79A7')
+source(file.path('code', '00-functions.r'))
 
 # Create output directories ####
 out <- '05-rarefy'
