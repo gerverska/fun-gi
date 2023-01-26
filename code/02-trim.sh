@@ -25,7 +25,7 @@ if [[ $1 -lt 1 ]]; then
 fi
 
 # Make a directory for scratch data ####
-mkdir -p scratch/trim1 scratch/trim2 scratch/trim3
+mkdir -p scratch/trim1 scratch/trim2 scratch/trim3 scratch/error
 
 # Make a directory for trimming output ####
 out='02-trim/'
@@ -38,12 +38,12 @@ touch $readme
 #read_length=251
 
 # Define gene primer sequences ####
-# Fun
+# Fun ####
 fun_fwd='CCTCCGCTTATTGATATGCTTAART' # ITS4-fun
 fun_fwd_rc='AYTTAAGCATATCAATAAGCGGAGG' # ITS4-fun, reverse complement
 fun_rev='AACTTTYRRCAAYGGATCWCT' #5.8S-fun
 fun_rev_rc='AGWGATCCRTTGYYRAAAGTT' # 5.8S-fun, reverse complement
-# Gi
+# Gi ####
 gi_fwd='CGTGTTCTGGAATATCTACCTC' # GiF
 gi_fwd_rc='GAGGTAGATATTCCAGAACACG' # GiF, reverse complement
 gi_rev='ATGCCTGAGCACAAACAG' # GiR
@@ -203,6 +203,28 @@ multiqc -f -o logs -n 02-trim3-R1.html -ip \
 -i 'Forward reads after the third trim' scratch/trim3/*R1_fastqc.zip
 multiqc -f -o logs -n 02-trim3-R2.html -ip \
 -i 'Reverse reads after the third trim' scratch/trim3/*R2_fastqc.zip
+
+# Determine how many undetermined reads contain primer sequences ####
+cutadapt -e 0.2 -j $1 \
+    -g $fun_fwd -g $gi_fwd -G $fun_rev -G $gi_rev \
+    -a $fun_rev_rc -a $gi_rev_rc -A $fun_fwd_rc -A $gi_fwd_rc \
+    -o scratch/error/trim-R1-fq.gz -p scratch/error/trim-R2-fq.gz 01-demultiplex/undetermined-R1.fq.gz 01-demultiplex/undetermined-R2.fq.gz
+
+echo total trimmed | cat >> logs/02-trim-error-reads.txt
+total=$(echo $(gzip -cd 01-demultiplex/undetermined-R1.fq.gz | wc -l) / 4 | bc)
+trimmed=$(echo $(gzip -cd scratch/error/trim-R1-fq.gz | wc -l) / 4 | bc)
+echo $total $trimmed | cat >> logs/02-trim-error-reads.txt
+
+# Write fastqc and multiqc reports if any undetermined reads were trimmed ####
+if [ $trimmed -gt 0 ]; then
+    fastqc $(find scratch/error -name "*fq.gz") -o scratch/error -t $1
+    
+    multiqc -f -o logs -n 02-trim-error-R1.html -ip \
+    -i 'Undetermined forward reads trimmed with Fun + Gi primers' scratch/error/*R1_fastqc.zip
+    
+    multiqc -f -o logs -n 02-trim-error-R2.html -ip \
+    -i 'Undetermined reverse reads trimmed with Fun + Gi primers' scratch/error/*R1_fastqc.zip
+fi
 
 # Remove the scratch directory after all intermediate logs have been generated ####    
 rm -r scratch
