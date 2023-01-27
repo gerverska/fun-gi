@@ -90,7 +90,7 @@ for fwd in $(find 01-demultiplex -name "*R1.fq.gz" | grep -f data/nano-k.txt); d
 
     cutadapt -e 0.2 --no-indels -j $1 --discard-untrimmed \
     -g ^file:scratch/fwd-adapters.fa \
-    -o $fwd_trim1 -p $rev_trim1 $fwd $rev
+    -o $fwd_trim1 -p $rev_trim1 $fwd $rev > logs/02-trim1-cutadapt.txt
 
 done
 
@@ -124,7 +124,7 @@ for fwd_trim1_in in $(find scratch/trim1 -name "*fwd-R1.fq.gz"); do
 
         cutadapt -e 0.2 --no-indels -j $1 --discard-untrimmed \
         -g ^file:scratch/rev-adapters.fa \
-        -o $rev_trim2 -p $fwd_trim2 $rev_trim1_in $fwd_trim1_in
+        -o $rev_trim2 -p $fwd_trim2 $rev_trim1_in $fwd_trim1_in > logs/02-trim2-cutadapt.txt
 
     fi
 
@@ -171,7 +171,7 @@ for fwd_trim2_in in $(find scratch/trim2 -name "*rev-R1.fq.gz"); do
         # It's possible that we will need SeqPurge to recover poorly-merging reads...
         cutadapt -e 0.2 -j $1 \
         -a $fun_rev_rc -a $gi_rev_rc -A $fun_fwd_rc -A $gi_fwd_rc \
-        -o $fwd_trim3 -p $rev_trim3 $fwd_trim2_in $rev_trim2_in
+        -o $fwd_trim3 -p $rev_trim3 $fwd_trim2_in $rev_trim2_in > logs/02-trim3-cutadapt.txt
 
         if [[ -f $fwd_trim3 && -f $rev_trim3 ]]; then
             trim3sum=$(echo $(gzip -cd $fwd_trim3 | wc -l) / 4 | bc)
@@ -207,7 +207,7 @@ multiqc -f -o logs -n 02-trim3-R2.html -ip \
 cutadapt -e 0.2 -j $1 --discard-untrimmed \
     -g "$fun_fwd;o=${#fun_fwd}" -g "$gi_fwd;o=${#gi_fwd}" -G "$fun_rev;o=${#fun_rev}" -G "$gi_rev;o=${#gi_rev}" \
     -a "$fun_rev_rc;o=${#fun_rev}" -a "$gi_rev_rc;o=${#gi_rev}" -A "$fun_fwd_rc;o=${#fun_fwd}" -A "$gi_fwd_rc;o=${#gi_fwd}" \
-    -o scratch/error/trim-R1-fq.gz -p scratch/error/trim-R2-fq.gz 01-demultiplex/undetermined-R1.fq.gz 01-demultiplex/undetermined-R2.fq.gz
+    -o scratch/error/trim-R1-fq.gz -p scratch/error/trim-R2-fq.gz 01-demultiplex/undetermined-R1.fq.gz 01-demultiplex/undetermined-R2.fq.gz > logs/02-trim-error-cutadapt.txt
 
 echo total trimmed | cat >> logs/02-trim-error-reads.txt
 total=$(echo $(gzip -cd 01-demultiplex/undetermined-R1.fq.gz | wc -l) / 4 | bc)
