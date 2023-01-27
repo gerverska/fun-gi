@@ -34,9 +34,6 @@ mkdir -p $out
 readme="${out}README.md"
 touch $readme
 
-# Set read length
-#read_length=251
-
 # Define gene primer sequences ####
 # Fun ####
 fun_fwd='CCTCCGCTTATTGATATGCTTAART' # ITS4-fun
@@ -50,6 +47,7 @@ gi_rev='ATGCCTGAGCACAAACAG' # GiR
 gi_rev_rc='CTGTTTGTGCTCAGGCAT' # GiR, reverse complement
 
 # Define frameshift sequences ####
+# There might be a simpler way to do this...
 n01='N'
 n02='NN'
 n03='NNN'
@@ -170,6 +168,7 @@ for fwd_trim2_in in $(find scratch/trim2 -name "*rev-R1.fq.gz"); do
         fwd_trim3="${out}${sample}-rc-R1.fq.gz"
         rev_trim3="${out}${sample}-rc-R2.fq.gz"
 
+        # It's possible that we will need SeqPurge to recover poorly-merging reads...
         cutadapt -e 0.2 -j $1 \
         -a $fun_rev_rc -a $gi_rev_rc -A $fun_fwd_rc -A $gi_fwd_rc \
         -o $fwd_trim3 -p $rev_trim3 $fwd_trim2_in $rev_trim2_in
@@ -205,9 +204,9 @@ multiqc -f -o logs -n 02-trim3-R2.html -ip \
 -i 'Reverse reads after the third trim' scratch/trim3/*R2_fastqc.zip
 
 # Determine how many undetermined reads contain primer sequences ####
-cutadapt -e 0.2 -j $1 \
-    -g $fun_fwd -g $gi_fwd -G $fun_rev -G $gi_rev \
-    -a $fun_rev_rc -a $gi_rev_rc -A $fun_fwd_rc -A $gi_fwd_rc \
+cutadapt -e 0.2 -j $1 --discard-untrimmed \
+    -g "$fun_fwd;o=${#fun_fwd}" -g "$gi_fwd;o=${#gi_fwd}" -G "$fun_rev;o=${#fun_rev}" -G "$gi_rev;o=${#gi_rev}" \
+    -a "$fun_rev_rc;o=${#fun_rev}" -a "$gi_rev_rc;o=${#gi_rev}" -A "$fun_fwd_rc;o=${#fun_fwd}" -A "$gi_fwd_rc;o=${#gi_fwd}" \
     -o scratch/error/trim-R1-fq.gz -p scratch/error/trim-R2-fq.gz 01-demultiplex/undetermined-R1.fq.gz 01-demultiplex/undetermined-R2.fq.gz
 
 echo total trimmed | cat >> logs/02-trim-error-reads.txt
@@ -223,7 +222,7 @@ if [ $trimmed -gt 0 ]; then
     -i 'Undetermined forward reads trimmed with Fun + Gi primers' scratch/error/*R1_fastqc.zip
     
     multiqc -f -o logs -n 02-trim-error-R2.html -ip \
-    -i 'Undetermined reverse reads trimmed with Fun + Gi primers' scratch/error/*R1_fastqc.zip
+    -i 'Undetermined reverse reads trimmed with Fun + Gi primers' scratch/error/*R2_fastqc.zip
 fi
 
 # Remove the scratch directory after all intermediate logs have been generated ####    
