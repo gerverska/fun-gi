@@ -93,7 +93,7 @@ for fwd in $(find $in -name "*R1.fq.gz" | grep -f data/nano-k.txt); do
     # json files are empty, so not sure this is working properly--use fastqc until this is fixed
     #json1="${logs}trim1/${stage2}.cutadapt.json"
 
-    cutadapt -e 0.2 --no-indels -j $1 --discard-untrimmed \
+    cutadapt -e 0.1 --no-indels -j $1 --discard-untrimmed \
     -g ^file:scratch/fwd-adapters.fa \
     -o $fwd_trim1 -p $rev_trim1 $fwd $rev > $logs/trim1-cutadapt.txt
 
@@ -127,7 +127,7 @@ for fwd_trim1_in in $(find $trim1 -name "*fwd-R1.fq.gz"); do
         fwd_trim2="${trim2}/${mid}-{name}-R1.fq.gz"
         rev_trim2="${trim2}/${mid}-{name}-R2.fq.gz"
 
-        cutadapt -e 0.2 --no-indels -j $1 --discard-untrimmed \
+        cutadapt -e 0.1 --no-indels -j $1 --discard-untrimmed \
         -g ^file:scratch/rev-adapters.fa \
         -o $rev_trim2 -p $fwd_trim2 $rev_trim1_in $fwd_trim1_in > $logs/trim2-cutadapt.txt
 
@@ -173,10 +173,13 @@ for fwd_trim2_in in $(find $trim2 -name "*rev-R1.fq.gz"); do
         fwd_trim3="${out}${sample}-rc-R1.fq.gz"
         rev_trim3="${out}${sample}-rc-R2.fq.gz"
 
-        # It's possible that we will need SeqPurge to recover poorly-merging reads...
-        cutadapt -e 0.2 -j $1 \
+        atropos -e 0.1 --aligner insert --insert-match-error-rate 0.2 -T $1 \
         -a $fun_rev_rc -a $gi_rev_rc -A $fun_fwd_rc -A $gi_fwd_rc \
-        -o $fwd_trim3 -p $rev_trim3 $fwd_trim2_in $rev_trim2_in > $logs/trim3-cutadapt.txt
+        -o $fwd_trim3 -p $rev_trim3 -pe1 $fwd_trim2_in -pe2 $rev_trim2_in > $logs/trim3-atropos.txt
+        
+        # cutadapt -e 0.1 -j $1 \
+        # -a $fun_rev_rc -a $gi_rev_rc -A $fun_fwd_rc -A $gi_fwd_rc \
+        # -o $fwd_trim3 -p $rev_trim3 $fwd_trim2_in $rev_trim2_in > $logs/trim3-cutadapt.txt
 
         if [[ -f $fwd_trim3 && -f $rev_trim3 ]]; then
             trim3sum=$(echo $(gzip -cd $fwd_trim3 | wc -l) / 4 | bc)

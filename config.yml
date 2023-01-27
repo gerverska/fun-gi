@@ -17,4 +17,5 @@ dependencies:
   - bioconductor-dada2=1.26.0
   - r-remotes=2.4.2
   - r-dplyr=1.0.10
+  - atropos=1.1.31
 prefix: /home/gerverska/projects/fun-gi/env
