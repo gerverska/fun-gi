@@ -26,6 +26,7 @@ library(ggplot2) # Should be imported by dada2, but I also thought this about Bi
 library(dada2)
 
 # Create output directories ####
+in.path <- '02-trim'
 out <- '03-denoise'
 logs <- file.path(out, 'logs')
 unlink(out, recursive = T)
@@ -35,8 +36,8 @@ unlink('scratch', recursive = T)
 dir.create('scratch')
 
 # Read in forward and reverse reads ####
-in.fwd <- in.path |> list.files(pattern = '.R1.fq.gz', full.names = T) |> sort()
-in.rev <- in.path |> list.files(pattern = '.R2.fq.gz', full.names = T) |> sort()
+in.fwd <- in.path |> list.files(pattern = 'R1.fq.gz', full.names = T) |> sort()
+in.rev <- in.path |> list.files(pattern = 'R2.fq.gz', full.names = T) |> sort()
 
 # Make paths for trimmed and filtered files ####
 filt <- file.path(out, 'filter')
