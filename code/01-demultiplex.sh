@@ -33,13 +33,13 @@ mkdir -p scratch
 pheniqs mux -t $1 -c data/stage2.json -I data/raw -O $out -R logs/pheniqs.txt
 
 # Produce a read count summary for each demultiplexed file ####
-files=$(find $out -name "*fq.gz" | grep -f data/nano-k.txt)
+fwd=$(find $out -name "*R1.fq.gz" | grep -f data/nano-k.txt)
 echo stage2 reads | cat >> $logs/reads.txt
 
-for fwd in $(echo $files | grep R1); do
+for file in $(echo $fwd); do
 
-    stage2=$(basename $fwd | awk -F '-' '{print $1"-"$2"-"$3}')
-    reads=$(echo $(gzip -cd $fwd | wc -l) / 4 | bc)
+    stage2=$(basename $file | awk -F '-' '{print $1"-"$2"-"$3}')
+    reads=$(echo $(gzip -cd $file | wc -l) / 4 | bc)
 
     echo $stage2 $reads | cat >> $logs/reads.txt
 
