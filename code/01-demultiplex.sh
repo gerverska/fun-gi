@@ -30,7 +30,7 @@ touch $out/README.md
 mkdir -p scratch
 
 # The log file path is relative to the location of the demultiplexed output... ####
-pheniqs mux -t $1 -c data/demultiplex.json -I data/raw -O $out -R logs/pheniqs.txt
+pheniqs mux -t $1 -c data/stage2.json -I data/raw -O $out -R logs/pheniqs.txt
 
 # Produce a read count summary for each demultiplexed file ####
 files=$(find $out -name "*fq.gz" | grep -f data/nano-k.txt)
