@@ -34,8 +34,9 @@ source(file.path('code', '00-functions.r'))
 
 # Create output directories ####
 out <- '04-compile'
+logs <- file.path(out, 'logs')
 unlink(out, recursive = T)
-dir.create(out)
+dir.create(logs, recursive = T)
 system(paste('touch', file.path(out, 'README.md')))
 unlink('scratch', recursive = T)
 dir.create('scratch')
@@ -65,12 +66,12 @@ itsx.flags <- paste('-i', file.path('scratch', 'itsx.fa'),
                     '-t "fungi,tracheophyta"',
                     '--preserve T',
                     '--cpu', threads, 
-                    '-o', file.path('logs', '04-compile-itsx'),
+                    '-o', file.path(logs, 'itsx'),
                     '--only_full T')
 system2('ITSx', args = itsx.flags)
 
 # Remove ASVs with incomplete fungal sequences ####
-itsx.otus <- readDNAStringSet(file.path('logs', '04-compile-itsx.ITS2.fasta')) |> names()
+itsx.otus <- readDNAStringSet(file.path(logs, 'itsx.ITS2.fasta')) |> names()
 itsx.seq <- fun.seq[names(fun.seq) %in% itsx.otus]
 itsx.tab <- fun.tab[, names(itsx.seq)]
 

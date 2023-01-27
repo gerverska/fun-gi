@@ -27,14 +27,14 @@ library(dada2)
 
 # Create output directories ####
 out <- '03-denoise'
+logs <- file.path(out, 'logs')
 unlink(out, recursive = T)
-dir.create(out)
+dir.create(logs, recursive = T)
 system(paste('touch', file.path(out, 'README.md')))
 unlink('scratch', recursive = T)
 dir.create('scratch')
 
 # Read in forward and reverse reads ####
-in.path <- '02-trim'
 in.fwd <- in.path |> list.files(pattern = '.R1.fq.gz', full.names = T) |> sort()
 in.rev <- in.path |> list.files(pattern = '.R2.fq.gz', full.names = T) |> sort()
 
@@ -65,8 +65,8 @@ system2('fastqc', args = fastqc.fwd)
 system2('fastqc', args = fastqc.rev)
 
 # Synthesize multiqc reports for each read direction ####
-multiqc.fwd <- paste('-f -o logs',
-                     '-n 03-denoise-filt-R1.html',
+multiqc.fwd <- paste('-f -o', logs,
+                     '-n filt-R1.html',
                      '-ip',
                      "-i 'Forward reads after quality filtering and trimming'",
                      'scratch/*R1_fastqc.zip')
@@ -88,10 +88,10 @@ names(derep.rev) <- gsub('-rc.R2.fq.gz', '', names(derep.rev))
 # Learn errors for each read direction. 1e09 bases will take a long time. ####
 err.fwd <- learnErrors(filt.fwd, multithread = threads, randomize = T)  # What does the randomize flag do? Not in manual...
 err.fwd.plot <- plotErrors(err.fwd, nominalQ = T) + ggtitle(paste('Forward read error model'))
-file.path('logs', '03-denoise-error-fwd.png') |> ggsave(err.fwd.plot, width = 12, height = 9)
+file.path(logs, 'error-fwd.png') |> ggsave(err.fwd.plot, width = 12, height = 9)
 err.rev <- learnErrors(filt.rev, multithread = threads, randomize = T)
 err.rev.plot <- plotErrors(err.rev, nominalQ = T) + ggtitle(paste('Reverse read error model'))
-file.path('logs', '03-denoise-error-rev.png') |> ggsave(err.rev.plot, width = 12, height = 9)
+file.path(logs, 'error-rev.png') |> ggsave(err.rev.plot, width = 12, height = 9)
 
 # Denoise reads in both directions ####
 dada.fwd <- dada(derep.fwd, err = err.fwd, multithread = threads, pool = 'pseudo')
@@ -121,7 +121,7 @@ track$sample <- rownames(track)
 
 log <- merge(trim.summary, track, by = 'sample', all.x = T)
 colnames(log) <- c('sample', 'input', 'filtered', 'denoised.fwd', 'denoised.rev', 'merged')
-file.path('logs', '03-denoise-dada2.rds') |> saveRDS(log, file = _)
+file.path(logs, 'dada2.rds') |> saveRDS(log, file = _)
 
 # Remove the scratch directory ####
 unlink('scratch', recursive = T)

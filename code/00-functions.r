@@ -38,7 +38,7 @@ lulu.clust <- function(tab, seq, multi = threads, name, min.match = 0.97){
                            '--iddef 1',
                            '--threads', multi,
                            '--userout', file.path('scratch', paste0('matchlist-', name, '.txt')),
-                           '--log', file.path('logs', paste0('04-compile-vsearch-', name, '.txt')),
+                           '--log', file.path(logs, paste0('vsearch-', name, '.txt')),
                            '--userfields query+target+id',
                            '--maxaccepts 0',
                            '--query_cov 0.9',
@@ -56,7 +56,7 @@ lulu.clust <- function(tab, seq, multi = threads, name, min.match = 0.97){
     lulu.seq <- nochim.seq[names(nochim.seq) %in% curation$curated_otus]
     
     # Move the LULU log from its original location to the log directory ####
-    system(paste('mv lulu.log*', file.path('logs', paste0('04-compile-lulu-', name, '.txt'))
+    system(paste('mv lulu.log*', file.path(logs, paste0('lulu-', name, '.txt'))
     ))
     
     # Output the new objects ####
