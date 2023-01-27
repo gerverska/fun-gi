@@ -207,7 +207,7 @@ multiqc -f -o logs -n 02-trim3-R2.html -ip \
 cutadapt -e 0.2 -j $1 --discard-untrimmed \
     -g "$fun_fwd;o=${#fun_fwd}" -g "$gi_fwd;o=${#gi_fwd}" -G "$fun_rev;o=${#fun_rev}" -G "$gi_rev;o=${#gi_rev}" \
     -a "$fun_rev_rc;o=${#fun_rev}" -a "$gi_rev_rc;o=${#gi_rev}" -A "$fun_fwd_rc;o=${#fun_fwd}" -A "$gi_fwd_rc;o=${#gi_fwd}" \
-    -o scratch/error/trim-R1-fq.gz -p scratch/error/trim-R2-fq.gz 01-demultiplex/undetermined-R1.fq.gz 01-demultiplex/undetermined-R2.fq.gz > logs/02-trim-error-cutadapt.txt
+    -o scratch/error/trim-R1.fq.gz -p scratch/error/trim-R2.fq.gz 01-demultiplex/undetermined-R1.fq.gz 01-demultiplex/undetermined-R2.fq.gz > logs/02-trim-error-cutadapt.txt
 
 echo total trimmed | cat >> logs/02-trim-error-reads.txt
 total=$(echo $(gzip -cd 01-demultiplex/undetermined-R1.fq.gz | wc -l) / 4 | bc)
