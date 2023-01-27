@@ -148,7 +148,6 @@ echo trim2 reads | cat >> $logs/trim2-reads.txt
 echo trim3 reads | cat >> $logs/trim3-reads.txt
 
 # This last trimming is done to remove any remaining primer sequence in the reverse complement ####
-# We used to use SeqPurge to do this, but I wish to discontinue its use due to poor documentation
 for fwd_trim2_in in $(find $trim2 -name "*rev-R1.fq.gz"); do
 
     rev_trim2_in=$(echo $fwd_trim2_in | sed 's/R1.fq.gz/R2.fq.gz/')
@@ -170,12 +169,24 @@ for fwd_trim2_in in $(find $trim2 -name "*rev-R1.fq.gz"); do
 
         echo $sample $trim2sum | cat >> $logs/trim2-reads.txt
 
-        fwd_trim3="${out}${sample}-rc-R1.fq.gz"
-        rev_trim3="${out}${sample}-rc-R2.fq.gz"
+        fwd_trim3="${out}/${sample}-rc-R1.fq.gz"
+        rev_trim3="${out}/${sample}-rc-R2.fq.gz"
 
-        atropos -e 0.1 --aligner insert --insert-match-error-rate 0.2 -T $1 \
-        -a $fun_rev_rc -a $gi_rev_rc -A $fun_fwd_rc -A $gi_fwd_rc \
-        -o $fwd_trim3 -p $rev_trim3 -pe1 $fwd_trim2_in -pe2 $rev_trim2_in > $logs/trim3-atropos.txt
+        if [[ "$(echo $sample | awk '/fun_fwd/ && /fun_rev/' )" == "$sample" ]]; then
+
+            atropos -e 0.1 --aligner insert --insert-match-error-rate 0.2 -T $1 \
+            -a $fun_rev_rc -A $fun_fwd_rc \
+            -o $fwd_trim3 -p $rev_trim3 -pe1 $fwd_trim2_in -pe2 $rev_trim2_in > $logs/trim3-atropos-fun.txt
+
+        fi
+
+        if [[ "$(echo $sample | awk '/gi_fwd/ && /gi_rev/' )" == "$sample" ]]; then
+
+            atropos -e 0.1 --aligner insert --insert-match-error-rate 0.2 -T $1 \
+	    -a $gi_rev_rc -A $gi_fwd_rc \
+            -o $fwd_trim3 -p $rev_trim3 -pe1 $fwd_trim2_in -pe2 $rev_trim2_in > $logs/trim3-atropos-gi.txt
+
+        fi
         
         # cutadapt -e 0.1 -j $1 \
         # -a $fun_rev_rc -a $gi_rev_rc -A $fun_fwd_rc -A $gi_fwd_rc \
@@ -219,7 +230,7 @@ cutadapt -e 0.2 -j $1 --discard-untrimmed \
 
 echo total trimmed | cat >> $logs/trim-error-reads.txt
 total=$(echo $(gzip -cd $in/undetermined-R1.fq.gz | wc -l) / 4 | bc)
-trimmed=$(echo $(gzip -cd $error/trim-R1-fq.gz | wc -l) / 4 | bc)
+trimmed=$(echo $(gzip -cd $error/trim-R1.fq.gz | wc -l) / 4 | bc)
 echo $total $trimmed | cat >> $logs/trim-error-reads.txt
 
 # Write fastqc and multiqc reports if any undetermined reads were trimmed ####
