@@ -83,7 +83,7 @@ bias <- ggplot(standard, aes(x = log10(dilution), y = log10(reads)
 file.path(out, 'dilution-bias.png') |> ggsave(bias)
 
 # Remove samples beneath target sequencing depth prior to rarefaction ####
-depth <- 750 # Need to show how we got at this number!!!
+depth <- 740 # Need to show how we got at this number!!!
 
 filt <- full |> subset(x = _, reads >= depth)
 filt.tab <- filt[, otus]
@@ -119,14 +119,14 @@ wide[is.na(wide) == T] <- 0
 wide.tab <- wide[, colnames(wide) %in% otus]
 
 # Identify fungal OTUs ####
-fun.otus <- colnames(wide.tab)[grepl('funOTU', colnames(wide.tab)) == T]
+fun.otus <- colnames(wide.tab)[grepl('fun_OTU', colnames(wide.tab)) == T]
 
 # Calculate statistics for each subsample ####
-wide.tab$noga_ra <- wide.tab$funOTU.1 / depth
-wide.tab$noga_load <- wide.tab$funOTU.1 / wide.tab$giOTU.1
+wide.tab$noga_ra <- wide.tab$fun_OTU.1 / depth
+wide.tab$noga_load <- wide.tab$fun_OTU.1 / wide.tab$gi_OTU.1
 
 wide.tab$fun_ra <- rowSums(wide.tab[, fun.otus]) / depth
-wide.tab$fun_load <- rowSums(wide.tab[, fun.otus]) / wide.tab$giOTU.1
+wide.tab$fun_load <- rowSums(wide.tab[, fun.otus]) / wide.tab$gi_OTU.1
 
 stat.tab <- wide.tab[!(colnames(wide.tab) %in% otus)]
 stat.tab$combo <- wide$combo

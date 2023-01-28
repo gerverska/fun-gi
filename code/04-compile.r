@@ -27,7 +27,7 @@ remotes::install_github('gerverska/lulu@v1.0.0', dependencies = F)
 # Load packages ####
 library(Biostrings)
 library(dada2)
-library(lulu) # Need to see how to download this through conda!!!
+library(lulu)
 
 # Load functions ####
 source(file.path('code', '00-functions.r'))

@@ -50,10 +50,12 @@ base |> residuals() |> qqline()
 
 # Test whether the full and base models are similar to each other ####
 test <- anova(full, base) |> data.frame()
+test
 file.path(out, 'anova.rds') |> saveRDS(test, file = _)
 
 # Extract model summary ####
 summ <- base |> summary()
+summ
 file.path(out, 'summary.rds') |> saveRDS(summ, file = _)
 
 # Add model residuals to the "standard" dataframe ####
@@ -68,7 +70,6 @@ dfssmt.stats <- data.frame(stat = c('minimum', 'mean', 'maximum'),
                                      max(log10(dfssmt$mean_noga_load), na.rm = T)
                                      ))
                                       
-
 # Plot the relationship between load and the dilution ratio ####
 load <- ggplot(standard, aes(x = log10(dilution), y = log10(mean_noga_load)
                            )) +
