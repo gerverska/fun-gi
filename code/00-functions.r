@@ -40,13 +40,13 @@ denoise <- function(fwd, rev, marker, threads){
         pairs <- c('N06-N06', 'N07-N07',
                    'N08-N08', 'N09-N09')
         
-        stop <- 'N03-N03'
-        start <- 'N06-N06'
+        stop <- 'N06-N06'
+        start <- 'N09-N09'
         
     } else {
         stop("Unknown marker specified: please specify 'fun' or 'gi")
     }
-    
+
     # Learn errors for each read direction ####
     err.fwd <- learnErrors(filt.fwd, multithread = threads, randomize = T)
     err.fwd.plot <- plotErrors(err.fwd, nominalQ = T) + ggtitle(paste(insert, 'forward read error model'))
@@ -89,9 +89,9 @@ denoise <- function(fwd, rev, marker, threads){
     
     # Identify frameshift pairs ####
     reads$fwd <- sapply(strsplit(rownames(reads), '-'), '[', 4) |>
-        gsub('_fwd', '', x = _) |> gsub('n', 'N', x = _)
+        gsub(paste0('_', marker, '_fwd'), '', x = _) |> gsub('n', 'N', x = _)
     reads$rev <- sapply(strsplit(rownames(reads), '-'), '[', 5) |>
-        gsub('_rev', '', x = _) |> gsub('n', 'N', x = _)
+        gsub(paste0('_', marker, '_rev'), '', x = _) |> gsub('n', 'N', x = _)
     reads$pair <- paste0(reads$fwd, '-', reads$rev)
     
     # Calculate the read depth of the marker for each frameshift pair ####
@@ -113,8 +113,7 @@ denoise <- function(fwd, rev, marker, threads){
     
     paste0(correct, ' / ', total, '\n', insert, '-trimmed reads\ncorrectly demultiplexed', '\n\n',
            del.sum, ' reads with deletions in ', stop, '\n',
-           in.sum, ' reads with insertions in ', start, '\n\n',
-           'Red and blue dashed lines indicate pairs\nused to calculate deletion and insertion\noccurrence rates, respectively') |>
+           in.sum, ' reads with insertions in ', start, '\n\n') |>
         cat(file = file.path(logs, paste0(marker, '-indel.txt')
         ))
     
