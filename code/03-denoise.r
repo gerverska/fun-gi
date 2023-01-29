@@ -35,8 +35,6 @@ logs <- file.path(out, 'logs')
 unlink(out, recursive = T)
 dir.create(logs, recursive = T)
 system(paste('touch', file.path(out, 'README.md')))
-unlink('scratch', recursive = T)
-dir.create('scratch')
 
 # Read in forward and reverse reads ####
 in.fwd <- in.path |> list.files(pattern = 'R1.fq.gz', full.names = T) |> sort()

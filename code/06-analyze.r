@@ -14,7 +14,7 @@ dir.create(out)
 system(paste('touch', file.path(out, 'README.md')))
 
 # Load and process rarefied output ####
-fun.gi <- readRDS(file.path('05-rarefy', 'fun-gi-rare.rds'))
+fun.gi <- readRDS(file.path('05-rarefy', 'fun-gi.rds'))
 
 meta <- fun.gi$meta
 rownames(meta) <- meta$combo
@@ -59,7 +59,7 @@ ftp <- ifelse(ftp < 0.001, '< 0.001', ftp)
 r2 <- summ$r.squared |> round(digits = 3)
 note <- paste0('Frameshift vs no-frameshift\nLikelihood ratio test: P-value = ', lrtp,
                '\n\nBase model F-test P-value = ', ftp,
-               '\nBase model adj. R-squared = ', r2) |> gsub('= <', '<', x = _)
+               '\nBase model R-squared = ', r2) |> gsub('= <', '<', x = _)
 
 # Add model residuals to the "standard" dataframe ####
 res <- data.frame(res = base$residuals)
@@ -118,4 +118,4 @@ shifts <- ggplot(standard, aes(x = fun_n, y = gi_n, color = res)) +
           axis.title.y = element_text(face = 'bold'),
           legend.title = element_text(face = 'bold'))
 
-file.path(out, 'residuals.png') |> ggsave(shifts, width = 12, height = 9)
+file.path(out, 'residuals.png') |> ggsave(shifts, width = 9, height = 6)
