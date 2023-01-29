@@ -136,7 +136,7 @@ denoise <- function(marker){
 }
 
 # 04-compile.r ####
-lulu.clust <- function(tab, seq, multi = threads, name, min.match = 0.97){
+lulu.clust <- function(tab, seq, name, min.match = 0.97){
     
     # Collapse identical ASVs ####
     colnames(tab) <- seq |> as.character() |> unname()
@@ -145,7 +145,7 @@ lulu.clust <- function(tab, seq, multi = threads, name, min.match = 0.97){
     # Remove chimeras ####
     nochim.tab <- removeBimeraDenovo(unique.tab,
                                      method = 'consensus',
-                                     multithread = multi,
+                                     multithread = threads,
                                      verbose = T)
     
     # Reassign OTU names ####
@@ -168,7 +168,7 @@ lulu.clust <- function(tab, seq, multi = threads, name, min.match = 0.97){
                            '--id', (min.match - 0.01),
                            '--strand plus',
                            '--iddef 1',
-                           '--threads', multi,
+                           '--threads', threads,
                            '--userout', file.path('scratch', paste0('matchlist-', name, '.txt')),
                            '--log', file.path(logs, paste0('vsearch-', name, '.txt')),
                            '--userfields query+target+id',

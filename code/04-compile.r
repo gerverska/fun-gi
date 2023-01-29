@@ -42,22 +42,23 @@ unlink('scratch', recursive = T)
 dir.create('scratch')
 
 # Load inputs ####
-meta <- read.csv(file.path('data', 'meta.csv')) # Change csv to rds!!!
-seq.tab <- readRDS(file.path('03-denoise', 'seq-tab.rds'))
+meta <- read.csv(file.path('data', 'meta.csv'))
+fun.tab <- readRDS(file.path('03-denoise', 'fun-seq-tab.rds'))
+gi.tab <- readRDS(file.path('03-denoise', 'gi-seq-tab.rds'))
 
 # Define fungal and Gigantea samples ####
 fun.samp <- meta$fun_id |> unique()
 gi.samp <- meta$gi_id |> unique()
 
 # Extract the fungal dataset from the DADA2 output ####
-fun.tab <- seq.tab[rownames(seq.tab) %in% fun.samp, ]
-fun.tab <- fun.tab[, colSums(fun.tab) > 0]
+fun.study.tab <- fun.tab[rownames(fun.tab) %in% fun.samp, ]
+fun.study.tab <- fun.study.tab[, colSums(fun.study.tab) > 0]
 
 # Rename OTUs and sequences ####
-fun.otus <- paste0('OTU.', 1:ncol(fun.tab))
-fun.seq <- getSequences(fun.tab) |> DNAStringSet()
+fun.otus <- paste0('OTU.', 1:ncol(fun.study.tab))
+fun.seq <- getSequences(fun.study.tab) |> DNAStringSet()
 names(fun.seq) <- fun.otus
-colnames(fun.tab) <- fun.otus
+colnames(fun.study.tab) <- fun.otus
 
 # Identify ASVs with complete fungal sequences ####
 writeXStringSet(fun.seq, file = file.path('scratch', 'itsx.fa'))
@@ -73,10 +74,10 @@ system2('ITSx', args = itsx.flags)
 # Remove ASVs with incomplete fungal sequences ####
 itsx.otus <- readDNAStringSet(file.path(logs, 'itsx.ITS2.fasta')) |> names()
 itsx.seq <- fun.seq[names(fun.seq) %in% itsx.otus]
-itsx.tab <- fun.tab[, names(itsx.seq)]
+itsx.tab <- fun.study.tab[, names(itsx.seq)]
 
 # Perform LULU post-clustering on the fungal subset ####
-fun.lulu <- lulu.clust(tab = itsx.tab, seq = itsx.seq, multi = threads, name = 'fun', min.match = 0.97)
+fun.lulu <- lulu.clust(tab = itsx.tab, seq = itsx.seq, name = 'fun', min.match = 0.97)
 
 # Predict fungal OTU taxonomy ####
 set.seed(666)
@@ -104,25 +105,23 @@ fun.lulu$boot <- boot
 fun.lulu$meta <- meta
 
 # Perform LULU post-clustering on the Gigantea subset ####
-gi.tab <- seq.tab[rownames(seq.tab) %in% gi.samp, ]
-gi.tab <- gi.tab[, colSums(gi.tab) > 0]
+gi.study.tab <- gi.tab[rownames(gi.tab) %in% gi.samp, ]
+gi.study.tab <- gi.study.tab[, colSums(gi.study.tab) > 0]
 
-gi.otus <- paste0('OTU.', 1:ncol(gi.tab))
-gi.seq <- getSequences(gi.tab) |> DNAStringSet()
+gi.otus <- paste0('OTU.', 1:ncol(gi.study.tab))
+gi.seq <- getSequences(gi.study.tab) |> DNAStringSet()
 names(gi.seq) <- gi.otus
-colnames(gi.tab) <- gi.otus
+colnames(gi.study.tab) <- gi.otus
 
-gi.lulu <- lulu.clust(tab = gi.tab, seq = gi.seq, multi = threads, name = 'gi', min.match = 0.85)
+gi.lulu <- lulu.clust(tab = gi.study.tab, seq = gi.seq, name = 'gi', min.match = 0.85)
 gi.lulu$seq <- gi.lulu$seq |> as.data.frame()
 colnames(gi.lulu$seq) <- 'sequence'
 
 gi.lulu$meta <- meta
 
-# Combine the fungal and Gigantea objects before output ####
-fun.gi <- list(fun = fun.lulu,
-               gi = gi.lulu)
-
-file.path(out, 'fun-gi.rds') |> saveRDS(fun.gi, file = _)
+# Save the LULU output ####
+file.path(out, 'fun-lulu.rds') |> saveRDS(fun.lulu, file = _)
+file.path(out, 'gi-lulu.rds') |> saveRDS(gi.lulu, file = _)
 
 # Remove temporary files ####
 unlink('scratch', recursive = T)
