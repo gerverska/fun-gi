@@ -5,6 +5,3 @@ correctly demultiplexed
 203 reads with deletions in N06-N06
 17 reads with insertions in N09-N09
 
-Red and blue dashed lines indicate pairs
-used to calculate deletion and insertion
-occurrence rates, respectively
