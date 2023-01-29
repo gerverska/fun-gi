@@ -8,17 +8,17 @@ get.n <- function(x){
     sum(getUniques(x))
 }
 
-denoise <- function(fwd, rev, marker, threads){
+denoise <- function(marker){
     # Set function package requirements ####
     require(dada2)
     
     # Subset files ####
-    filt.fwd <- fwd[grepl(marker, fwd) == T]
-    filt.rev <- rev[grepl(marker, rev) == T]
+    marker.fwd <- trim.fwd[grepl(marker, trim.fwd) == T]
+    marker.rev <- trim.rev[grepl(marker, trim.rev) == T]
     
     # Dereplicate sequences ####
-    derep.fwd <- derepFastq(filt.fwd, verbose = F)
-    derep.rev <- derepFastq(filt.rev, verbose = F)
+    derep.fwd <- derepFastq(marker.fwd, verbose = F)
+    derep.rev <- derepFastq(marker.rev, verbose = F)
     
     # Trim names for each derep object ####
     names(derep.fwd) <- gsub('-rc.R1.fq.gz', '', names(derep.fwd))
@@ -48,10 +48,10 @@ denoise <- function(fwd, rev, marker, threads){
     }
 
     # Learn errors for each read direction ####
-    err.fwd <- learnErrors(filt.fwd, multithread = threads, randomize = T)
+    err.fwd <- learnErrors(marker.fwd, multithread = threads, randomize = T)
     err.fwd.plot <- plotErrors(err.fwd, nominalQ = T) + ggtitle(paste(insert, 'forward read error model'))
     file.path(logs, paste0(marker, '-error-fwd.png')) |> ggsave(err.fwd.plot, width = 12, height = 9)
-    err.rev <- learnErrors(filt.rev, multithread = threads, randomize = T)
+    err.rev <- learnErrors(marker.rev, multithread = threads, randomize = T)
     err.rev.plot <- plotErrors(err.rev, nominalQ = T) + ggtitle(paste(insert, 'reverse read error model'))
     file.path(logs, paste0(marker, '-error-rev.png')) |> ggsave(err.rev.plot, width = 12, height = 9)
     

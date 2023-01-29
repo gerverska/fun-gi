@@ -54,14 +54,14 @@ trim <- filterAndTrim(in.fwd, filt.fwd,
                       multithread = threads)
 
 # # Update list of trimmed file paths to exclude samples with no reads passing filters ####
-filt.fwd <- filt |> list.files(pattern = 'R1.fq.gz', full.names = T)
-filt.rev <- filt |> list.files(pattern = 'R2.fq.gz', full.names = T)
+trim.fwd <- filt |> list.files(pattern = 'R1.fq.gz', full.names = T)
+trim.rev <- filt |> list.files(pattern = 'R2.fq.gz', full.names = T)
 
 # Make fastqc reports for each sample and read direction after filtering and trimming ####
-fastqc.fwd <- paste(paste(filt.fwd, collapse = ' '),
+fastqc.fwd <- paste(paste(trim.fwd, collapse = ' '),
                     '-t', threads,
                     '-o scratch')
-fastqc.rev <- paste(paste(filt.rev, collapse = ' '),
+fastqc.rev <- paste(paste(trim.rev, collapse = ' '),
                     '-t', threads,
                     '-o scratch')
 
@@ -82,5 +82,5 @@ system2('multiqc', args = multiqc.fwd)
 system2('multiqc', args = multiqc.rev)
 
 # Denoise Fun and Gi reads separately ####
-denoise(fwd = filt.fwd, rev = filt.rev, marker = 'fun', threads = threads)
-denoise(fwd = filt.fwd, rev = filt.rev, marker = 'gi', threads = threads)
+denoise(marker = 'fun')
+denoise(marker = 'gi')
