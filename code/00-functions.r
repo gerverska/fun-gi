@@ -159,25 +159,25 @@ lulu.clust <- function(tab, seq, name, min.match = 0.97){
     
     # Make a matchlist by aligning all remaining sequences against each other
     writeXStringSet(nochim.seq,
-                    file = file.path('scratch', paste0('vsearch-', name, '.fa'))
+                    file = file.path('scratch', paste0(name, '-vsearch.fa'))
     )
     
-    vsearch.flags <- paste('--usearch_global', file.path('scratch', paste0('vsearch-', name, '.fa')),
-                           '--db', file.path('scratch', paste0('vsearch-', name, '.fa')),
+    vsearch.flags <- paste('--usearch_global', file.path('scratch', paste0(name, '-vsearch.fa')),
+                           '--db', file.path('scratch', paste0(name, '-vsearch.fa')),
                            '--self',
                            '--id', (min.match - 0.01),
                            '--strand plus',
                            '--iddef 1',
                            '--threads', threads,
-                           '--userout', file.path('scratch', paste0('matchlist-', name, '.txt')),
-                           '--log', file.path(logs, paste0('vsearch-', name, '.txt')),
+                           '--userout', file.path('scratch', paste0(name, '-matchlist.txt')),
+                           '--log', file.path(logs, paste0(name, '-vsearch.txt')),
                            '--userfields query+target+id',
                            '--maxaccepts 0',
                            '--query_cov 0.9',
                            '--maxhits 10')
     system2('vsearch', args = vsearch.flags)
     
-    matchlist <- read.table(file.path('scratch', paste0('matchlist-', name, '.txt')),
+    matchlist <- read.table(file.path('scratch', paste0(name, '-matchlist.txt')),
                             header = F,
                             as.is = T,
                             stringsAsFactors = F)
@@ -188,7 +188,7 @@ lulu.clust <- function(tab, seq, name, min.match = 0.97){
     lulu.seq <- nochim.seq[names(nochim.seq) %in% curation$curated_otus]
     
     # Move the LULU log from its original location to the log directory ####
-    system(paste('mv lulu.log*', file.path(logs, paste0('lulu-', name, '.txt'))
+    system(paste('mv lulu.log*', file.path(logs, paste0(name, '-lulu.txt'))
     ))
     
     # Output the new objects ####
