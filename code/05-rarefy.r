@@ -34,16 +34,17 @@ dir.create(out)
 system(paste('touch', file.path(out, 'README.md')))
 
 # Load and process inputs ####
-fun.gi <- readRDS(file.path('04-compile', 'fun-gi.rds'))
+fun.lulu <- readRDS(file.path('04-compile', 'fun-lulu.rds'))
+gi.lulu <- readRDS(file.path('04-compile', 'gi-lulu.rds'))
 
-fun.tab <- fun.gi$fun$tab
+fun.tab <- fun.lulu$tab
 fun.tab$fun_id <- rownames(fun.tab)
 
-gi.tab <- fun.gi$gi$tab
+gi.tab <- gi.lulu$tab
 gi.tab$gi_id <- rownames(gi.tab)
 
 # Combine fungal and Gigantea OTU tables and metadata into a single dataframe ####
-full <- merge(fun.gi$fun$meta, fun.tab, by = 'fun_id', all = T)
+full <- merge(fun.lulu$meta, fun.tab, by = 'fun_id', all = T)
 full <- merge(full, gi.tab, by = 'gi_id', all = T)
 full$combo <- paste(full$tags, full$fun_n, full$gi_n, sep = '-') # Ideally fix some of this upstream!!!
 colnames(full) <- colnames(full) |> gsub('-', '', x = _) # Ideally fix this upstream!!!
@@ -58,6 +59,8 @@ full$reads <- subset(full, select = otus) |> rowSums()
 
 # Examine whether sequencing depth, dilution treatments, and/or frameshift codes are correlated ####
 standard <- full |> subset(template == 'standard')
+standard$fun_n <- standard$fun_n|> gsub("_fun_fwd|_fun_rev", '', x = _) |> gsub('n', 'N', x = _)
+standard$gi_n <- standard$gi_n|> gsub("_gi_fwd|_gi_rev", '', x = _) |> gsub('n', 'N', x = _)
 
 bias <- ggplot(standard, aes(x = log10(dilution), y = log10(reads)
                      )) +
@@ -77,10 +80,9 @@ bias <- ggplot(standard, aes(x = log10(dilution), y = log10(reads)
           axis.line = element_line(colour = 'black'),
           axis.text.x = element_text(angle = 45, vjust = 0.5),
           axis.title.x = element_text(face = 'bold'),
-          axis.title.y = element_text(face = 'bold'),
-          legend.position = 'none')
+          axis.title.y = element_text(face = 'bold'))
 
-file.path(out, 'dilution-bias.png') |> ggsave(bias)
+file.path(out, 'dilution-bias.png') |> ggsave(bias, width = 9, height = 6)
 
 # Remove samples beneath target sequencing depth prior to rarefaction ####
 depth <- 740 # Need to show how we got at this number!!!
@@ -157,11 +159,11 @@ calc.wide <- reshape(calc,
 
 # Combine the rarefied output and the full metadata into a single dataframe ####
 meta <- merge(full, calc.wide, by = 'combo', all = T)
-fun.gi.rare <- list(meta = meta,
-                    fun_seq = fun.gi$fun$seq,
-                    tax = fun.gi$fun$tax,
-                    boot = fun.gi$fun$boot,
-                    gi_seq = fun.gi$gi$seq)
+fun.gi <- list(meta = meta,
+               fun_seq = fun.lulu$seq,
+               tax = fun.lulu$tax,
+               boot = fun.lulu$boot,
+               gi_seq = gi.lulu$seq)
 
 # Write the object out to an .rds file ####
-file.path(out, 'fun-gi-rare.rds') |> saveRDS(fun.gi.rare, file = _)
+file.path(out, 'fun-gi.rds') |> saveRDS(fun.gi, file = _)

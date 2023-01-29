@@ -84,3 +84,6 @@ system2('multiqc', args = multiqc.rev)
 # Denoise Fun and Gi reads separately ####
 denoise(marker = 'fun')
 denoise(marker = 'gi')
+
+# Remove the scratch directory ####
+unlink('scratch', recursive = T)
