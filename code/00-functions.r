@@ -67,7 +67,8 @@ denoise <- function(fwd, rev, marker, threads){
     file.path(out, paste0(marker, '-seq-tab.rds')) |> saveRDS(seq.tab, file = _)
     
     # Make a summary log ####
-    trim.summary <- trim |> data.frame()
+    marker.trim <- trim[grepl(marker, rownames(trim)) == T, ]
+    trim.summary <- marker.trim |> data.frame()
     trim.summary$sample <- rownames(trim.summary)
     trim.summary$sample <- gsub('-rc-R1.fq.gz', '', trim.summary$sample)
     
@@ -79,7 +80,7 @@ denoise <- function(fwd, rev, marker, threads){
     
     log <- merge(trim.summary, track, by = 'sample', all.x = T)
     colnames(log) <- c('sample', 'input', 'filtered', 'denoised.fwd', 'denoised.rev', 'merged')
-    file.path(logs, paste0(marker, '-reads.rds')) |> saveRDS(log, file = _)
+    file.path(logs, paste0(marker, '-reads.txt')) |> write.table(log, file = _, row.names = F, quote = F)
     
     # Calculate sequencing depth ####
     seq.df <- seq.tab |> data.frame()
