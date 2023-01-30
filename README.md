@@ -1,7 +1,7 @@
 fun-gi: hamPCR + Douglas-fir + needle fungi
 ================
 Kyle A. Gervers
-2023-01-29
+2023-01-30
 
 > This work is unpublished. All results shown are preliminary.
 
@@ -108,6 +108,8 @@ All packages were installed and managed with `conda`.
     ##   - r-markdown=1.4
     ## prefix: /home/gerverska/projects/fun-gi/env
 
+## Installation
+
 Install the above bioinformatic environment from `config.yml` using the
 script `00-build.sh`
 
@@ -118,3 +120,47 @@ script `00-build.sh`
     bash code/00-build.sh
 
 A `make` implementation is on the horizon…
+
+## Figures
+
+Descriptions are coming soon.
+
+### DADA2 error modeling
+
+![fun-error-fwd](03-denoise/logs/fun-error-fwd.png)
+
+![fun-error-rev](03-denoise/logs/fun-error-rev.png)
+
+![gi-error-fwd](03-denoise/logs/gi-error-fwd.png)
+
+![gi-error-rev](03-denoise/logs/gi-error-rev.png)
+
+### Sequencing depth along the NOGA:PSME DNA standard curve
+
+![dilution-bias](05-rarefy/logs/dilution-bias.png)
+
+### Checking assumptions when modeling NOGA load against NOGA DNA dilution
+
+#### Base model residuals
+
+![base-residuals](06-analyze/logs/base-residuals.png)
+
+#### Full model residuals
+
+![full-residuals](06-analyze/logs/full-residuals.png)
+
+#### Full model intercepts for Fun frameshifts pairs
+
+![fun-full-rand](06-analyze/logs/fun-full-rand.png)
+
+#### Full model intercepts for Gi frameshift pairs (interacted with Fun frameshifts)
+
+![gi-full-rand](06-analyze/logs/gi-full-rand.png)
+
+### NOGA load modeled against NOGA DNA dilution
+
+![dilution-load](06-analyze/dilution-load.png)
+
+### Base model residuals associated with each frameshift pair
+
+![residuals](06-analyze/residuals.png)
