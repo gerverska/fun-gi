@@ -29,8 +29,9 @@ source(file.path('code', '00-functions.r'))
 
 # Create output directories ####
 out <- '05-rarefy'
+logs <- file.path(out, 'logs')
 unlink(out, recursive = T)
-dir.create(out)
+dir.create(logs, recursive = T)
 system(paste('touch', file.path(out, 'README.md')))
 
 # Load and process inputs ####
@@ -82,7 +83,7 @@ bias <- ggplot(standard, aes(x = log10(dilution), y = log10(reads)
           axis.title.x = element_text(face = 'bold'),
           axis.title.y = element_text(face = 'bold'))
 
-file.path(out, 'dilution-bias.png') |> ggsave(bias, width = 9, height = 6)
+file.path(logs, 'dilution-bias.png') |> ggsave(bias, width = 9, height = 6)
 
 # Remove samples beneath target sequencing depth prior to rarefaction ####
 depth <- 740 # Need to show how we got at this number!!!
@@ -104,6 +105,7 @@ replicas <- lapply(long, rep, long$reads) |> as.data.frame() |>
 # Subsample each sample a number of times to a given depth ####
 combo <- filt.tab$combo
 subsamples <- 1000
+set.seed(666)
 rare <- lapply(combo, rarefy,
                depth = depth, subsamples = subsamples,
                replicas = replicas) |> do.call(rbind, args = _)
