@@ -9,8 +9,9 @@ source(file.path('code', '00-functions.r'))
 
 # Create output directories ####
 out <- '06-analyze'
+logs <- file.path(out, 'logs')
 unlink(out, recursive = T)
-dir.create(out)
+dir.create(logs, recursive = T)
 system(paste('touch', file.path(out, 'README.md')))
 
 # Load and process rarefied output ####
@@ -33,21 +34,29 @@ full <- lme(log10(mean_noga_load) ~ log10(dilution),
             na.action = na.omit)
 
 # Check for normally distributed residuals ####
+file.path(logs, 'full-residuals.png') |> png()
 full |> residuals() |> qqnorm()
 full |> residuals() |> qqline()
+dev.off()
 
 # Check for normally distributed random intercepts ####
+file.path(logs, 'fun-full-rand.png') |> png()
 ranef(full)$fun_n$`(Intercept)` |> qqnorm()
 ranef(full)$fun_n$`(Intercept)` |> qqline()
+dev.off()
+file.path(logs, 'gi-full-rand.png') |> png()
 ranef(full)$gi_n$`(Intercept)` |> qqnorm()
 ranef(full)$gi_n$`(Intercept)` |> qqline()
+dev.off()
 
 # Design a base model, only including dilution as an effect ####
 base <- lm(log10(mean_noga_load) ~ log10(dilution), standard)
 
 # Check for normally distributed residuals ####
+file.path(logs, 'base-residuals.png') |> png()
 base |> residuals() |> qqnorm()
 base |> residuals() |> qqline()
+dev.off()
 
 # Test whether the full and base models are similar to each other ####
 lrtp <- anova(full, base)$`p-value`[2] |> round(3)
