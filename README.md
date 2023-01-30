@@ -42,12 +42,12 @@ increases in intensity, it’s unclear whether this result represents an
 outcome in which the taxon increasingly prefers a condition along a
 gradient or whether other taxa simply prefer it less. Further, unless
 microbial ecologists employ other means of estimating microbial load
-(qPCR, CFUs, cell-sorting, etc.), they generally cannot invesetigate
-fundamental phenomena centered around microbial productivity, e.g.,
-productivity-divesity relationships. hamPCR, like other similar
+(qPCR, CFUs, cell-sorting, etc.), they generally cannot investigate
+fundamental phenomena centered around productivity, e.g.,
+productivity-diversity relationships. hamPCR, similar to other
 “spike-in” approaches, represents a more achievable way to estimate
-microbial load using the same method used to census the microbial
-commmunity of interest.
+microbial load while at the same time censusing the microbial community
+of interest.
 
 ## What is this project?
 
@@ -59,14 +59,11 @@ produced with the fungal-specific primers 5.8S-Fun and ITS4-Fun (Fun),
 designed by D. Lee Taylor *et al.* 2016. Using this size difference, the
 primer concentration of Gi primers to add to each PCR was optimized. To
 test whether or not fungal load calculations derived from this technique
-were biologically meaningful, PCRs were performed along a serial
-dilution gradient standard curve of *Nothophaeocryptopus gaeumannii*
-(NOGA) DNA diluted in PSME DNA. To the extent that the calculated load
-of NOGA positively correlates with the expected dilution of NOGA DNA,
-the null hypothesis of NOGA load’s meaninglessness is rejected.
-Additionally, 8 samples of pooled needle DNA extractions (DFSSMT
-samples) were included to observe where an average sample might fall
-along the standard curve.
+were reliable, PCRs were performed along a standard curve of
+*Nothophaeocryptopus gaeumannii* (NOGA) DNA serially diluted in PSME
+DNA. Additionally, 8 samples of pooled needle DNA extractions (DFSSMT
+samples) were included to observe or predict where an average sample
+might fall along the standard curve.
 
 Further, with the expectation of a future need to extend the number of
 barcode indices for multiplexing samples prior to sequencing, the 3-9 bp
