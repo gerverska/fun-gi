@@ -9,7 +9,7 @@ hamPCR + Douglas-fir + needle fungi
 
 > This work is unpublished. All results shown are preliminary.
 
-## What’s hamPCR and why should I care?
+## What’s hamPCR?
 
 Host-associated microbe PCR (hamPCR) is a metabarcoding technique
 developed by [Derek Lundberg *et
@@ -53,7 +53,7 @@ productivity-divesity relationships. hamPCR, like other similar
 microbial load using the same method used to census the microbial
 commmunity of interest.
 
-## What does this repo do?
+## What is this project?
 
 Following the protocol described by Lundberg *et al.*, a primer pair was
 designed (Gi) that amplfies a portion of the single-copy *Gigantea*
@@ -115,4 +115,10 @@ All packages were installed and managed with `conda`.
 The entire bioinformatic environment can be installed from the above
 `config.yml` using the script `00-build.sh`
 
+    # First clone the repository (using the gh CLI tool here) ####
+    gh repo clone gerverska/fun-gi
+
+    # Then run the build script ####
     bash code/00-build.sh
+
+A `make` implementation is on the horizon.
