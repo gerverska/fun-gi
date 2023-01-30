@@ -3,10 +3,6 @@ fun-gi: hamPCR + Douglas-fir + needle fungi
 Kyle A. Gervers
 2023-01-29
 
-# fun-gi
-
-hamPCR + Douglas-fir + needle fungi
-
 > This work is unpublished. All results shown are preliminary.
 
 ## What’s hamPCR?
@@ -112,8 +108,8 @@ All packages were installed and managed with `conda`.
     ##   - r-markdown=1.4
     ## prefix: /home/gerverska/projects/fun-gi/env
 
-The entire bioinformatic environment can be installed from the above
-`config.yml` using the script `00-build.sh`
+Install the above bioinformatic environment from `config.yml` using the
+script `00-build.sh`
 
     # First clone the repository (using the gh CLI tool here) ####
     gh repo clone gerverska/fun-gi
@@ -121,4 +117,4 @@ The entire bioinformatic environment can be installed from the above
     # Then run the build script ####
     bash code/00-build.sh
 
-A `make` implementation is on the horizon.
+A `make` implementation is on the horizon…

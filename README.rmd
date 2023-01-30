@@ -9,9 +9,6 @@ output: github_document
 knitr::opts_chunk$set(echo = F, include = F)
 ```
 
-# fun-gi
-hamPCR + Douglas-fir + needle fungi
-
 > This work is unpublished. All results shown are preliminary.
 
 ## What's hamPCR?
@@ -32,7 +29,7 @@ conda --version
 cat config.yml
 
 ```
-The entire bioinformatic environment can be installed from the above `config.yml` using the script `00-build.sh`
+Install the above bioinformatic environment from `config.yml` using the script `00-build.sh`
 ```
 # First clone the repository (using the gh CLI tool here) ####
 gh repo clone gerverska/fun-gi
@@ -41,4 +38,4 @@ gh repo clone gerverska/fun-gi
 bash code/00-build.sh
 ```
 
-A `make` implementation is on the horizon.
+A `make` implementation is on the horizon...
