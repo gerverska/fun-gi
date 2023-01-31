@@ -128,3 +128,12 @@ shifts <- ggplot(standard, aes(x = fun_n, y = gi_n, color = res)) +
           legend.title = element_text(face = 'bold'))
 
 file.path(out, 'residuals.png') |> ggsave(shifts, width = 9, height = 6)
+
+# Comparing relative abundance and load metrics ####
+fun.tab <- standard[, colnames(standard)[grepl('OTU', colnames(standard)) == T]]
+fun.tab <- fun.tab[, colSums(fun.tab) > 0]
+
+tax <- fun.gi$tax[rownames(fun.gi$tax) %in% colnames(fun.tab), ] |> t() |> data.frame()
+
+fun.tab <- standard |> subset(select = colnames(standard)[grepl('OTU', colnames(standard)) == T])
+fun.tab <- standard |> subset(select = colnames(standard)[grepl('OTU', colnames(standard)) == T])
