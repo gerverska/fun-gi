@@ -1,7 +1,7 @@
 fun-gi: hamPCR + Douglas-fir + needle fungi
 ================
 Kyle A. Gervers
-2023-01-30
+2023-01-31
 
 > This work is unpublished. All results shown are preliminary.
 
@@ -39,8 +39,8 @@ For example, most ecologists are interested in knowing how a taxon
 responds to a meaningful environmental gradient or treatment. If the
 relative abundance of a taxon generally increases as the gradient
 increases in intensity, it’s unclear whether this result represents an
-outcome in which the taxon increasingly prefers a condition along a
-gradient or whether other taxa simply prefer it less. Further, unless
+outcome in which the taxon increasingly *prefers* a condition along a
+gradient or whether *other taxa simply prefer it less*. Further, unless
 microbial ecologists employ other means of estimating microbial load
 (qPCR, CFUs, cell-sorting, etc.), they generally cannot investigate
 fundamental phenomena centered around productivity, e.g.,
@@ -52,18 +52,19 @@ of interest.
 ## What is this project?
 
 Following the protocol described by Lundberg *et al.*, a primer pair was
-designed (Gi) that amplfies a portion of the single-copy *Gigantea*
-coding sequence in coastal Douglas-fir (*Pseudotsuga menziesii* var.
-*menziesii*, PSME). This amplicon is \~100 bp larger than most amplicons
-produced with the fungal-specific primers 5.8S-Fun and ITS4-Fun (Fun),
-designed by D. Lee Taylor *et al.* 2016. Using this size difference, the
-primer concentration of Gi primers to add to each PCR was optimized. To
-test whether or not fungal load calculations derived from this technique
-were reliable, PCRs were performed along a standard curve of
+designed (Gi) that amplfies a portion of *Gigantea* coding sequence in
+coastal Douglas-fir (*Pseudotsuga menziesii* var. *menziesii*, PSME).
+This amplicon is \~100 bp larger than most amplicons produced with the
+fungal-specific primers 5.8S-Fun and ITS4-Fun (Fun), designed by [D. Lee
+Taylor *et al.*
+2016](https://journals.asm.org/doi/10.1128/AEM.02576-16). Using this
+size difference, the primer concentration of Gi primers was optimized.
+To test whether or not fungal load calculations derived from this
+technique were reliable, PCRs were performed along a standard curve of
 *Nothophaeocryptopus gaeumannii* (NOGA) DNA serially diluted in PSME
 DNA. Additionally, 8 samples of pooled needle DNA extractions (DFSSMT
-samples) were included to observe or predict where an average sample
-might fall along the standard curve.
+samples) were included to predict where an average sample might fall
+along the standard curve.
 
 Further, with the expectation of a future need to extend the number of
 barcode indices for multiplexing samples prior to sequencing, the 3-9 bp
@@ -124,13 +125,15 @@ Descriptions are coming soon.
 
 ### DADA2 error modeling
 
-![fun-error-fwd](03-denoise/logs/fun-error-fwd.png)
+<img src="03-denoise/logs/fun-error-fwd.png" style="width:45.0%"
+alt="fun-error-fwd" />
+<img src="03-denoise/logs/fun-error-rev.png" style="width:45.0%"
+alt="fun-error-rev" />
 
-![fun-error-rev](03-denoise/logs/fun-error-rev.png)
-
-![gi-error-fwd](03-denoise/logs/gi-error-fwd.png)
-
-![gi-error-rev](03-denoise/logs/gi-error-rev.png)
+<img src="03-denoise/logs/gi-error-fwd.png" style="width:45.0%"
+alt="gi-error-fwd" />
+<img src="03-denoise/logs/gi-error-rev.png" style="width:45.0%"
+alt="gi-error-rev" />
 
 ### Sequencing depth along the NOGA:PSME DNA standard curve
 
@@ -142,17 +145,14 @@ Descriptions are coming soon.
 
 ![base-residuals](06-analyze/logs/base-residuals.png)
 
-#### Full model residuals
+#### Full model residuals (a) and Fun (b) + Gi (c) frameshift random intercepts
 
-![full-residuals](06-analyze/logs/full-residuals.png)
-
-#### Full model intercepts for Fun frameshifts pairs
-
-![fun-full-rand](06-analyze/logs/fun-full-rand.png)
-
-#### Full model intercepts for Gi frameshift pairs (interacted with Fun frameshifts)
-
-![gi-full-rand](06-analyze/logs/gi-full-rand.png)
+a <img src="06-analyze/logs/full-residuals.png" style="width:30.0%"
+alt="full-residuals" /> b
+<img src="06-analyze/logs/fun-full-rand.png" style="width:30.0%"
+alt="fun-full-rand" /> c
+<img src="06-analyze/logs/gi-full-rand.png" style="width:30.0%"
+alt="gi-full-rand" />
 
 ### NOGA load modeled against NOGA DNA dilution
 
