@@ -166,4 +166,5 @@ full <- lme(log10(mean_noga_load) ~ log10(dilution),
 
 #### Hierarchical clustering
 
-![ra-clust](06-analyze/ra-clust.png){width=35%}![load-clust](06-analyze/load-clust.png){width=35%}
+![ra-clust](06-analyze/ra-clust.png)
+![load-clust](06-analyze/load-clust.png)

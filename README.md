@@ -310,5 +310,5 @@ Descriptions are ongoing.
 
 #### Hierarchical clustering
 
-<img src="06-analyze/ra-clust.png" style="width:35.0%" alt="ra-clust" /><img src="06-analyze/load-clust.png" style="width:35.0%"
-alt="load-clust" />
+![ra-clust](06-analyze/ra-clust.png)
+![load-clust](06-analyze/load-clust.png)
