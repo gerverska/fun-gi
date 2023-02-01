@@ -5,7 +5,3 @@ SGE_Batch -c 'bash && conda run -p env/ bash code/01-demultiplex.sh 16' -r demul
 SGE_Batch -c 'bash && conda run -p env/ bash code/02-trim.sh 32' -r trim-log -P 32 -m 256G -M gerversk@oregonstate.edu
 SGE_Batch -c 'bash && conda run -p env/ Rscript code/03-denoise.r 32' -r denoise-log -P 32 -m 256G -M gerversk@oregonstate.edu
 SGE_Batch -c 'bash && conda run -p env/ Rscript code/04-compile.r 16' -r compile-log -P 16 -m 256G -M gerversk@oregonstate.edu
-
-# To-do ####
-- Figure out if Fun + Gi primers/ASVs can be trimmed from/aligned to undemultiplexed sequences (update 02-trim.sh + 04-compile.r)
-- Test whether only using forward reads changes the relationship between NOGA load and NOGA dilution (03-denoise.r, difficult)

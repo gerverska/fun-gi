@@ -141,8 +141,15 @@ fun.otus <- colnames(fun.tab)
 
 fun.ra <- fun.tab / rowSums(fun.tab)
 fun.ra$stat <- 'Relative abundance'
-fun.load <- (fun.tab / gi.reads)^(1/4)
+
+fun.load <- fun.tab / gi.reads
+fun.load[fun.load == 0] <- NA
+c <- min(fun.load, na.rm = T) |> log10() |> round()
+d <- 10^c
+fun.load[is.na(fun.load) == T] <- 0
+fun.load <- log10(fun.load + d) - c
 fun.load$stat <- 'Log-transformed load'
+
 fun.both <- rbind(fun.ra, fun.load)
 fun.both$combo <- rownames(fun.ra) |> rep(2)
 
@@ -152,22 +159,19 @@ long <- reshape(fun.both,
                 timevar = 'OTU', idvar = c('combo', 'stat'))
 long$OTU <- long$OTU |> gsub('fun_', '', x = _)
 
-compare <- ggplot(long, aes(x = combo, y = value, fill = OTU)) +
+taxa <- ggplot(long, aes(x = combo, y = value, fill = OTU)) +
     geom_bar(stat = 'identity') +
     facet_grid(rows = vars(stat), scales = 'free') +
     scale_y_continuous(n.breaks = 6) +
     xlab("\nDFSSMT sample") +
     ylab("Value\n") +
+    scale_fill_manual(values = color.pal) +
     theme_classic() +
     theme(text = element_text(size = 14),
+          axis.title.x = element_text(face = 'bold'),
           axis.title.y = element_blank(),
+          legend.title = element_text(face = 'bold'),
           axis.text.x = element_blank(),
           axis.ticks.x = element_blank())
-theme(text = element_text(size = 14),
-      axis.text.x = element_text(angle = 45, vjust = 0.5),
-      axis.title.x = element_text(face = 'bold'),
-      axis.title.y = element_text(face = 'bold'),
-      legend.title = element_text(face = 'bold'))
 
-test$value |> quantile()
-
+file.path(out, 'taxa.png') |> ggsave(taxa, width = 6, height = 6)
