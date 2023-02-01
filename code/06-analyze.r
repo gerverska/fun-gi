@@ -198,15 +198,15 @@ file.path(out, 'taxa.png') |> ggsave(taxa, width = 6, height = 6)
 rownames(fun.ra) <- 1:nrow(fun.ra)
 rownames(fun.load) <- 1:nrow(fun.load)
 
-ra.clust <- hclust(vegdist(fun.ra[, -ncol(fun.ra)],
-                           method = 'bray'), method = 'ward.D2')
-load.clust <- hclust(vegdist(fun.load[, -ncol(fun.load)],
-                        method = 'bray'), method = 'ward.D2')
+ra.clust <- hclust(dist(fun.ra[, -ncol(fun.ra)], method = 'euclidean'),
+                   method = 'ward.D2')
+load.clust <- hclust(dist(fun.load[, -ncol(fun.load)], method = 'euclidean'),
+                     method = 'ward.D2')
 
 file.path(out, 'ra-clust.png') |> png()
-plot(ra.clust, main = 'Relative abundance', sub = '', xlab = '')
+plot(ra.clust, main = 'Relative abundance', sub = '', xlab = '', ylab = 'Distance')
 dev.off()
 
 file.path(out, 'load-clust.png') |> png()
-plot(load.clust, main = 'Log-transformed load', sub = '', xlab = '')
+plot(load.clust, main = 'Log-transformed load', sub = '', xlab = '', ylab = 'Distance')
 dev.off()

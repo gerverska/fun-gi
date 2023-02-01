@@ -1,7 +1,7 @@
 fun-gi: hamPCR + Douglas-fir + needle fungi
 ================
 Kyle A. Gervers
-2023-01-31
+2023-02-01
 
 > This work is unpublished. All results shown are preliminary.
 
@@ -119,6 +119,8 @@ All packages were installed and managed with `conda`.
       - atropos=1.1.31
       - r-rmarkdown=2.20
       - r-markdown=1.4
+      - r-caret=6.0_93
+      - r-vegan=2.6_4
     prefix: /home/gerverska/projects/fun-gi/env
 
 ## Installation
@@ -294,8 +296,19 @@ Descriptions are ongoing.
 
 ### NOGA load regressed on NOGA dilution
 
-![dilution-load](06-analyze/dilution-load.png)
+![dilution-load](06-analyze/load.png)
 
 ### Base model residuals associated with each frameshift pair
 
 ![residuals](06-analyze/residuals.png)
+
+### Comparing DFSSMT samples with relative abundance and fungal load data
+
+#### Raw metrics
+
+![taxa](06-analyze/taxa.png)
+
+#### Hierarchical clustering
+
+<img src="06-analyze/ra-clust.png" style="width:45.0%" alt="ra-clust" /><img src="06-analyze/load-clust.png" style="width:45.0%"
+alt="load-clust" />

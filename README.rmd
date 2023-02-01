@@ -152,8 +152,18 @@ full <- lme(log10(mean_noga_load) ~ log10(dilution),
 
 ### NOGA load regressed on NOGA dilution
 
-![dilution-load](06-analyze/dilution-load.png)
+![dilution-load](06-analyze/load.png)
 
 ### Base model residuals associated with each frameshift pair
 
 ![residuals](06-analyze/residuals.png)
+
+### Comparing DFSSMT samples with relative abundance and fungal load data
+
+#### Raw metrics
+
+![taxa](06-analyze/taxa.png)
+
+#### Hierarchical clustering
+
+![ra-clust](06-analyze/ra-clust.png){width=45%}![load-clust](06-analyze/load-clust.png){width=45%}
