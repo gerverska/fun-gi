@@ -2,6 +2,7 @@
 
 # Load packages ####
 library(ggplot2)
+library(vegan)
 library(caret)
 library(nlme)
 
@@ -167,19 +168,20 @@ fun.load <- log10(fun.load + d) - c
 fun.load$stat <- 'Log-transformed load'
 
 fun.both <- rbind(fun.ra, fun.load)
-fun.both$combo <- rownames(fun.ra) |> rep(2)
+fun.both$id <- 1:nrow(fun.ra) |> rep(2)
 
 long <- reshape(fun.both,
                 direction = 'long', varying = fun.otus,
                 v.names = 'value', times = fun.otus,
-                timevar = 'OTU', idvar = c('combo', 'stat'))
+                timevar = 'OTU', idvar = c('id', 'stat'))
 long$OTU <- long$OTU |> gsub('fun_', '', x = _)
 
 # Plot a stacked bar chart comparing relative abundance and load ####
-taxa <- ggplot(long, aes(x = combo, y = value, fill = OTU)) +
+taxa <- ggplot(long, aes(x = id, y = value, fill = OTU)) +
     geom_bar(stat = 'identity') +
     facet_grid(rows = vars(stat), scales = 'free') +
     scale_y_continuous(n.breaks = 6) +
+    scale_x_continuous(n.breaks = 8) +
     xlab("\nDFSSMT sample") +
     ylab("Value\n") +
     scale_fill_manual(values = color.pal) +
@@ -188,7 +190,23 @@ taxa <- ggplot(long, aes(x = combo, y = value, fill = OTU)) +
           axis.title.x = element_text(face = 'bold'),
           axis.title.y = element_blank(),
           legend.title = element_text(face = 'bold'),
-          axis.text.x = element_blank(),
           axis.ticks.x = element_blank())
 
 file.path(out, 'taxa.png') |> ggsave(taxa, width = 6, height = 6)
+
+# Compare relative abundance and load hierarchical clustering assignments ####
+rownames(fun.ra) <- 1:nrow(fun.ra)
+rownames(fun.load) <- 1:nrow(fun.load)
+
+ra.clust <- hclust(vegdist(fun.ra[, -ncol(fun.ra)],
+                           method = 'bray'), method = 'ward.D2')
+load.clust <- hclust(vegdist(fun.load[, -ncol(fun.load)],
+                        method = 'bray'), method = 'ward.D2')
+
+file.path(out, 'ra-clust.png') |> png()
+plot(ra.clust, main = 'Relative abundance', sub = '', xlab = '')
+dev.off()
+
+file.path(out, 'load-clust.png') |> png()
+plot(load.clust, main = 'Log-transformed load', sub = '', xlab = '')
+dev.off()
