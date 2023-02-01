@@ -2,6 +2,7 @@
 
 # Load packages ####
 library(ggplot2)
+library(caret)
 library(nlme)
 
 # Load functions ####
@@ -61,14 +62,27 @@ dev.off()
 # Test whether the full and base models are similar to each other ####
 lrtp <- anova(full, base)$`p-value`[2] |> round(3)
 
-# Extract model summary ####
+# Perform leave-one-out cross validation to quantify sample weight ####
+control <- trainControl(method = 'LOOCV', number = length(standard$combo))
+set.seed(666)
+loocv <- train(log10(mean_noga_load) ~ log10(dilution),
+               standard, method = 'lm',
+               trControl = control, na.action = na.omit)
+
+# Extract model information ####
 summ <- base |> summary()
+
 ftp <- summ$coefficients[8] |> round(3)
 ftp <- ifelse(ftp < 0.001, '< 0.001', ftp)
-r2 <- summ$r.squared |> round(digits = 3)
+
+exp.r2 <- summ$r.squared |> round(digits = 3)
+pred.r2 <- loocv$results$Rsquared |> round(digits = 3)
+rmse <- loocv$results$RMSE |> round(digits = 3)
+
 note <- paste0('Frameshift vs no-frameshift\nLikelihood ratio test: P-value = ', lrtp,
                '\n\nBase model F-test P-value = ', ftp,
-               '\nBase model R-squared = ', r2) |> gsub('= <', '<', x = _)
+               '\nBase model R-squared = ', exp.r2,
+               '\n\nBase model LOOCV R-squared = ', pred.r2, '\n( RMSE = ', rmse, ' )') |> gsub('= <', '<', x = _)
 
 # Add model residuals to the "standard" dataframe ####
 res <- data.frame(res = base$residuals)
@@ -83,7 +97,7 @@ dfssmt.stats <- data.frame(stat = c('minimum', 'mean', 'maximum'),
                                      ))
                                       
 # Plot the relationship between load and the dilution ratio ####
-plot.y <- max(log10(standard$mean_noga_load), na.rm = T) * 0.75
+plot.y <- max(log10(standard$mean_noga_load), na.rm = T) * 0.8
 plot.x <- min(log10(standard$dilution), na.rm = T) * 0.8
 
 load <- ggplot(standard, aes(x = log10(dilution), y = log10(mean_noga_load)
@@ -110,7 +124,7 @@ load <- ggplot(standard, aes(x = log10(dilution), y = log10(mean_noga_load)
           axis.title.y = element_text(face = 'bold'),
           legend.title = element_text(face = 'bold'))
 
-file.path(out, 'dilution-load.png') |> ggsave(load, width = 12, height = 9)
+file.path(out, 'load.png') |> ggsave(load, width = 12, height = 9)
 
 # Plot the relationship between frameshift pairs and model residuals ####
 set.seed(666)
@@ -129,7 +143,7 @@ shifts <- ggplot(standard, aes(x = fun_n, y = gi_n, color = res)) +
 
 file.path(out, 'residuals.png') |> ggsave(shifts, width = 9, height = 6)
 
-# Comparing relative abundance and load metrics ####
+# Extract OTU tables from the entire dataset ####
 fun.tab <- subset(meta, template == 'dfssmt',
                   select = colnames(meta)[grepl('fun_OTU', colnames(meta)) == T])
 gi.reads <- subset(meta, template == 'dfssmt',
@@ -139,9 +153,11 @@ combo <- meta[meta$template == 'dfssmt' , 'combo']
 fun.tab <- subset(fun.tab, select = c((colSums(fun.tab)) > 0))
 fun.otus <- colnames(fun.tab)
 
+# Calculate relative abundances for all OTUs ####
 fun.ra <- fun.tab / rowSums(fun.tab)
 fun.ra$stat <- 'Relative abundance'
 
+# Calculate fungal loads and apply a generalized log-transformation ####
 fun.load <- fun.tab / gi.reads
 fun.load[fun.load == 0] <- NA
 c <- min(fun.load, na.rm = T) |> log10() |> round()
@@ -159,6 +175,7 @@ long <- reshape(fun.both,
                 timevar = 'OTU', idvar = c('combo', 'stat'))
 long$OTU <- long$OTU |> gsub('fun_', '', x = _)
 
+# Plot a stacked bar chart comparing relative abundance and load ####
 taxa <- ggplot(long, aes(x = combo, y = value, fill = OTU)) +
     geom_bar(stat = 'identity') +
     facet_grid(rows = vars(stat), scales = 'free') +
