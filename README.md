@@ -5,7 +5,18 @@ Kyle A. Gervers
 
 > This work is unpublished. All results shown are preliminary.
 
-## What’s hamPCR?
+# Sections
+
+- [hamPCR](#hampcr)
+- [Overview](#overview)
+- [Reproducibility](#reproducibility)
+- [Installation](#installation)
+- [Methods](#methods)
+- [Results](#results)
+
+## hamPCR
+
+[Return](#sections)
 
 Host-associated microbe PCR (hamPCR) is a metabarcoding technique
 developed by [Derek Lundberg *et
@@ -49,7 +60,9 @@ productivity-diversity relationships. hamPCR, similar to other
 microbial load while at the same time censusing the microbial community
 of interest.
 
-## What is this project?
+## Overview
+
+[Return](#sections)
 
 Following the protocol described by Lundberg *et al.*, a primer pair was
 designed (Gi) that amplfies a portion of *Gigantea* coding sequence in
@@ -79,34 +92,38 @@ chemistry.
 
 ## Reproducibility
 
+[Return](#sections)
+
 All packages were installed and managed with `conda`.
 
-    ## conda 22.11.1
-    ## name: base
-    ## channels:
-    ##   - conda-forge
-    ##   - bioconda
-    ##   - defaults
-    ## dependencies:
-    ##   - fastqc=0.11.9
-    ##   - r-base=4.2.2
-    ##   - multiqc=1.13
-    ##   - gh=2.21.2
-    ##   - pheniqs=2.1.0
-    ##   - libgit2=1.5.0
-    ##   - git=2.39.0
-    ##   - itsx=1.1.3
-    ##   - cutadapt=4.2
-    ##   - vsearch=2.22.1
-    ##   - bioconductor-dada2=1.26.0
-    ##   - r-remotes=2.4.2
-    ##   - r-dplyr=1.0.10
-    ##   - atropos=1.1.31
-    ##   - r-rmarkdown=2.20
-    ##   - r-markdown=1.4
-    ## prefix: /home/gerverska/projects/fun-gi/env
+    conda 22.11.1
+    name: base
+    channels:
+      - conda-forge
+      - bioconda
+      - defaults
+    dependencies:
+      - fastqc=0.11.9
+      - r-base=4.2.2
+      - multiqc=1.13
+      - gh=2.21.2
+      - pheniqs=2.1.0
+      - libgit2=1.5.0
+      - git=2.39.0
+      - itsx=1.1.3
+      - cutadapt=4.2
+      - vsearch=2.22.1
+      - bioconductor-dada2=1.26.0
+      - r-remotes=2.4.2
+      - r-dplyr=1.0.10
+      - atropos=1.1.31
+      - r-rmarkdown=2.20
+      - r-markdown=1.4
+    prefix: /home/gerverska/projects/fun-gi/env
 
 ## Installation
+
+[Return](#sections)
 
 Install the above bioinformatic environment from `config.yml` using the
 script `00-build.sh`
@@ -119,42 +136,163 @@ script `00-build.sh`
 
 A `make` implementation is on the horizon…
 
-## Figures
+## Methods
 
-Descriptions are coming soon.
+[Return](#sections)
 
-### DADA2 error modeling
+- [Demultiplex](#demultiplex)
+- [Trim](#trim)
+- [Denoise](#denoise)
+- [Compile](#compile)
+- [Rarefy](#rarefy)
+- [Analyze](#analyze)
 
-<img src="03-denoise/logs/fun-error-fwd.png" style="width:45.0%"
-alt="fun-error-fwd" />
-<img src="03-denoise/logs/fun-error-rev.png" style="width:45.0%"
-alt="fun-error-rev" />
+Descriptions are ongoing.
 
-<img src="03-denoise/logs/gi-error-fwd.png" style="width:45.0%"
-alt="gi-error-fwd" />
-<img src="03-denoise/logs/gi-error-rev.png" style="width:45.0%"
-alt="gi-error-rev" />
+### Demultiplex
 
-### Sequencing depth along the NOGA:PSME DNA standard curve
+### Trim
+
+### Denoise
+
+[Methods](#methods)
+
+![fun-error-fwd](03-denoise/logs/fun-error-fwd.png)
+
+![fun-error-rev](03-denoise/logs/fun-error-rev.png)
+
+![gi-error-fwd](03-denoise/logs/gi-error-fwd.png)
+
+![gi-error-rev](03-denoise/logs/gi-error-rev.png)
+
+### Compile
+
+[Methods](#methods)
+
+#### LULU post-clustering of Fun ASVs
+
+
+    ####processing: fun_OTU.1 #####
+    ---hits: fun_OTU.3 
+    ---hits: fun_OTU.4 
+    ---hits: fun_OTU.5
+    ---potential parent: 
+    No parent found!
+
+    ####processing: fun_OTU.3 #####
+    ---hits: fun_OTU.1 
+    ---hits: fun_OTU.4 
+    ---hits: fun_OTU.5
+    ---potential parent: fun_OTU.1
+    ------checking: fun_OTU.1
+    ------relative cooccurence: 1 which is sufficient!
+    ------min avg abundance: 32.8 which is OK!
+    SETTING fun_OTU.3 to be an ERROR of fun_OTU.1
+
+    ####processing: fun_OTU.2 #####
+    ---hits: 
+    ---potential parent: 
+    No parent found!
+
+    ####processing: fun_OTU.4 #####
+    ---hits: fun_OTU.1 
+    ---hits: fun_OTU.3
+    ---potential parent: fun_OTU.1 
+    ---potential parent: fun_OTU.3
+    ------checking: fun_OTU.1
+    ------relative cooccurence: 1 which is sufficient!
+    ------min avg abundance: 103.945945945946 which is OK!
+    SETTING fun_OTU.4 to be an ERROR of fun_OTU.1
+
+    ------checking: fun_OTU.3
+    ####processing: fun_OTU.5 #####
+    ---hits: fun_OTU.1 
+    ---hits: fun_OTU.3
+    ---potential parent: fun_OTU.1 
+    ---potential parent: fun_OTU.3
+    ------checking: fun_OTU.1
+    ------relative cooccurence: 0
+    ------checking: fun_OTU.3
+    ------relative cooccurence: 0
+    No parent found!
+
+#### LULU post-clustering of Gi ASVs
+
+
+    ####processing: gi_OTU.1 #####
+    ---hits: gi_OTU.2 
+    ---hits: gi_OTU.3
+    ---potential parent: 
+    No parent found!
+
+    ####processing: gi_OTU.2 #####
+    ---hits: gi_OTU.1 
+    ---hits: gi_OTU.3
+    ---potential parent: gi_OTU.1
+    ------checking: gi_OTU.1
+    ------relative cooccurence: 1 which is sufficient!
+    ------min avg abundance: 2.20670391061453 which is OK!
+    SETTING gi_OTU.2 to be an ERROR of gi_OTU.1
+
+    ####processing: gi_OTU.3 #####
+    ---hits: gi_OTU.1 
+    ---hits: gi_OTU.2
+    ---potential parent: gi_OTU.1 
+    ---potential parent: gi_OTU.2
+    ------checking: gi_OTU.1
+    ------relative cooccurence: 1 which is sufficient!
+    ------min avg abundance: 10.8850574712644 which is OK!
+    SETTING gi_OTU.3 to be an ERROR of gi_OTU.1
+
+    ------checking: gi_OTU.2
+
+### Rarefy
+
+[Methods](#methods)
 
 ![dilution-bias](05-rarefy/logs/dilution-bias.png)
 
-### Checking assumptions when modeling NOGA load against NOGA DNA dilution
+### Analyze
 
-#### Base model residuals
+[Methods](#methods)
+
+#### Base model
+
+##### Full model residuals
+
+    Regress NOGA load onto known NOGA dilution, without accounting for Fun + Gi frameshifts
+
+    base <- lm(log10(mean_noga_load) ~ log10(dilution), standard)
 
 ![base-residuals](06-analyze/logs/base-residuals.png)
 
-#### Full model residuals (a) and Fun (b) + Gi (c) frameshift random intercepts
+#### Full model
 
-a <img src="06-analyze/logs/full-residuals.png" style="width:30.0%"
-alt="full-residuals" /> b
-<img src="06-analyze/logs/fun-full-rand.png" style="width:30.0%"
-alt="fun-full-rand" /> c
-<img src="06-analyze/logs/gi-full-rand.png" style="width:30.0%"
-alt="gi-full-rand" />
+    Regress NOGA load onto known NOGA dilution, treating Fun + Gi frameshifts as random effects
 
-### NOGA load modeled against NOGA DNA dilution
+    library(nlme)
+
+    full <- lme(log10(mean_noga_load) ~ log10(dilution),
+                random = list(fun_n = ~ 1, gi_n = ~ 1),
+                data = standard,
+                method = 'ML',
+                na.action = na.omit)
+
+##### Full model residuals
+
+![full-residuals](06-analyze/logs/full-residuals.png)
+
+##### Fun frameshift random intercepts
+
+![fun-full-rand](06-analyze/logs/fun-full-rand.png)
+
+##### Gi frameshift random intercepts (nested within Fun)
+
+![gi-full-rand](06-analyze/logs/gi-full-rand.png)
+
+## Results
+
+### NOGA load regressed on NOGA dilution
 
 ![dilution-load](06-analyze/dilution-load.png)
 

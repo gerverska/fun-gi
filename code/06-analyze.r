@@ -130,10 +130,44 @@ shifts <- ggplot(standard, aes(x = fun_n, y = gi_n, color = res)) +
 file.path(out, 'residuals.png') |> ggsave(shifts, width = 9, height = 6)
 
 # Comparing relative abundance and load metrics ####
-fun.tab <- standard[, colnames(standard)[grepl('OTU', colnames(standard)) == T]]
-fun.tab <- fun.tab[, colSums(fun.tab) > 0]
+fun.tab <- subset(meta, template == 'dfssmt',
+                  select = colnames(meta)[grepl('fun_OTU', colnames(meta)) == T])
+gi.reads <- subset(meta, template == 'dfssmt',
+                   select = colnames(meta)[grepl('gi_OTU', colnames(meta)) == T]) |> rowSums()
+combo <- meta[meta$template == 'dfssmt' , 'combo']
 
-tax <- fun.gi$tax[rownames(fun.gi$tax) %in% colnames(fun.tab), ] |> t() |> data.frame()
+fun.tab <- subset(fun.tab, select = c((colSums(fun.tab)) > 0))
+fun.otus <- colnames(fun.tab)
 
-fun.tab <- standard |> subset(select = colnames(standard)[grepl('OTU', colnames(standard)) == T])
-fun.tab <- standard |> subset(select = colnames(standard)[grepl('OTU', colnames(standard)) == T])
+fun.ra <- fun.tab / rowSums(fun.tab)
+fun.ra$stat <- 'Relative abundance'
+fun.load <- (fun.tab / gi.reads)^(1/4)
+fun.load$stat <- 'Log-transformed load'
+fun.both <- rbind(fun.ra, fun.load)
+fun.both$combo <- rownames(fun.ra) |> rep(2)
+
+long <- reshape(fun.both,
+                direction = 'long', varying = fun.otus,
+                v.names = 'value', times = fun.otus,
+                timevar = 'OTU', idvar = c('combo', 'stat'))
+long$OTU <- long$OTU |> gsub('fun_', '', x = _)
+
+compare <- ggplot(long, aes(x = combo, y = value, fill = OTU)) +
+    geom_bar(stat = 'identity') +
+    facet_grid(rows = vars(stat), scales = 'free') +
+    scale_y_continuous(n.breaks = 6) +
+    xlab("\nDFSSMT sample") +
+    ylab("Value\n") +
+    theme_classic() +
+    theme(text = element_text(size = 14),
+          axis.title.y = element_blank(),
+          axis.text.x = element_blank(),
+          axis.ticks.x = element_blank())
+theme(text = element_text(size = 14),
+      axis.text.x = element_text(angle = 45, vjust = 0.5),
+      axis.title.x = element_text(face = 'bold'),
+      axis.title.y = element_text(face = 'bold'),
+      legend.title = element_text(face = 'bold'))
+
+test$value |> quantile()
+
