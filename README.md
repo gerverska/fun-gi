@@ -159,13 +159,17 @@ Descriptions are ongoing.
 
 [Methods](#methods)
 
-![fun-error-fwd](03-denoise/logs/fun-error-fwd.png)
+| Fun forward error model                                                                  | Fun reverse error model                             |
+|------------------------------------------------------------------------------------------|-----------------------------------------------------|
+| [![fun-error-fwd](03-denoise/logs/fun-error-fwd.png)](03-denoise/logs/fun-error-fwd.png) | ![fun-error-rev](03-denoise/logs/fun-error-rev.png) |
 
-![fun-error-rev](03-denoise/logs/fun-error-rev.png)
+| Gi forward error model                            | Gi reverse error model                            |
+|---------------------------------------------------|---------------------------------------------------|
+| ![gi-error-fwd](03-denoise/logs/gi-error-fwd.png) | ![gi-error-rev](03-denoise/logs/gi-error-rev.png) |
 
-![gi-error-fwd](03-denoise/logs/gi-error-fwd.png)
-
-![gi-error-rev](03-denoise/logs/gi-error-rev.png)
+| Fun frameshift pairs                                  | Gi frameshift pairs                                  |
+|-------------------------------------------------------|------------------------------------------------------|
+| ![fun-frameshift](03-denoise/logs/fun-frameshift.png) | ![gi-frameshift](03-denoise/logs/fun-frameshift.png) |
 
 ### Compile
 
@@ -280,19 +284,13 @@ Descriptions are ongoing.
                 method = 'ML',
                 na.action = na.omit)
 
-##### Full model residuals
-
-![full-residuals](06-analyze/logs/full-residuals.png)
-
-##### Fun frameshift random intercepts
-
-![fun-full-rand](06-analyze/logs/fun-full-rand.png)
-
-##### Gi frameshift random intercepts (nested within Fun)
-
-![gi-full-rand](06-analyze/logs/gi-full-rand.png)
+| Full model residuals                                  | Fun frameshift random intercepts                    | Gi frameshift random intercepts (nested within Fun) |
+|-------------------------------------------------------|-----------------------------------------------------|-----------------------------------------------------|
+| ![full-residuals](06-analyze/logs/full-residuals.png) | ![fun-full-rand](06-analyze/logs/fun-full-rand.png) | ![gi-full-rand](06-analyze/logs/gi-full-rand.png)   |
 
 ## Results
+
+[Return](#sections)
 
 ### NOGA load regressed on NOGA dilution
 
@@ -310,5 +308,6 @@ Descriptions are ongoing.
 
 #### Hierarchical clustering
 
-![ra-clust](06-analyze/ra-clust.png)
-![load-clust](06-analyze/load-clust.png)
+| Relative abundance                   | Log-transformed load                     |
+|--------------------------------------|------------------------------------------|
+| ![ra-clust](06-analyze/ra-clust.png) | ![load-clust](06-analyze/load-clust.png) |

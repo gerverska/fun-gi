@@ -1,8 +1,8 @@
 # Determine the viability of hamPCR ####
 
 # Load packages ####
+library(patchwork)
 library(ggplot2)
-library(vegan)
 library(caret)
 library(nlme)
 
@@ -28,6 +28,15 @@ standard <- subset(meta, template == 'standard')
 dfssmt <- subset(meta, template == 'dfssmt')
 dfssmt$noga_load <- dfssmt$fun_OTU.1 / dfssmt$gi_OTU.1
 
+# Design a base model, only including dilution as an effect ####
+base <- lm(log10(mean_noga_load) ~ log10(dilution), standard)
+
+# Check for normally distributed residuals ####
+file.path(logs, 'base-residuals.png') |> png()
+base |> residuals() |> qqnorm()
+base |> residuals() |> qqline()
+dev.off()
+
 # Design a full model, including frameshifts as random effects ####
 full <- lme(log10(mean_noga_load) ~ log10(dilution),
             random = list(fun_n = ~ 1, gi_n = ~ 1),
@@ -43,21 +52,14 @@ dev.off()
 
 # Check for normally distributed random intercepts ####
 file.path(logs, 'fun-full-rand.png') |> png()
+par(mar = c(5, 5, 5, 5))
 ranef(full)$fun_n$`(Intercept)` |> qqnorm()
 ranef(full)$fun_n$`(Intercept)` |> qqline()
 dev.off()
 file.path(logs, 'gi-full-rand.png') |> png()
+par(mar = c(5, 5, 5, 5))
 ranef(full)$gi_n$`(Intercept)` |> qqnorm()
 ranef(full)$gi_n$`(Intercept)` |> qqline()
-dev.off()
-
-# Design a base model, only including dilution as an effect ####
-base <- lm(log10(mean_noga_load) ~ log10(dilution), standard)
-
-# Check for normally distributed residuals ####
-file.path(logs, 'base-residuals.png') |> png()
-base |> residuals() |> qqnorm()
-base |> residuals() |> qqline()
 dev.off()
 
 # Test whether the full and base models are similar to each other ####
@@ -204,9 +206,9 @@ load.clust <- hclust(dist(fun.load[, -ncol(fun.load)], method = 'euclidean'),
                      method = 'ward.D2')
 
 file.path(out, 'ra-clust.png') |> png()
-plot(ra.clust, main = 'Relative abundance', sub = '', xlab = '', ylab = 'Distance')
+plot(ra.clust, main = '', sub = '', xlab = '', ylab = 'Euclidean distance')
 dev.off()
 
 file.path(out, 'load-clust.png') |> png()
-plot(load.clust, main = 'Log-transformed load', sub = '', xlab = '', ylab = 'Distance')
+plot(load.clust, main = '', sub = '', xlab = '', ylab = '')
 dev.off()
