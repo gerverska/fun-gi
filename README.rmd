@@ -70,12 +70,16 @@ Descriptions are ongoing.
 
 ### Demultiplex
 
+```{r demultiplex, include=TRUE}
+
+htmltools::includeHTML(file.path('01-demultiplex', 'logs', 'R1.html'))
+
+```
+
 ### Trim
 
 ### Denoise
 [Methods](#methods)
-
-![test](01-demultiplex/logs/R1.html)
 
 Fun forward error model | Fun reverse error model
 --- | ---
