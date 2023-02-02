@@ -180,6 +180,6 @@ full <- lme(log10(mean_noga_load) ~ log10(dilution),
 
 #### Hierarchical clustering
 
-| Relative abundance | Log-transformed load |
-| --- | --- |
-| ![ra-clust](06-analyze/ra-clust.png) | ![load-clust](06-analyze/load-clust.png) |
+Relative abundance | Log-transformed load
+--- | ---
+![ra-clust](06-analyze/ra-clust.png) | ![load-clust](06-analyze/load-clust.png)
