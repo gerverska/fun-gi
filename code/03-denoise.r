@@ -34,6 +34,7 @@ out <- '03-denoise'
 logs <- file.path(out, 'logs')
 unlink(out, recursive = T)
 dir.create(logs, recursive = T)
+dir.create('scratch')
 system(paste('touch', file.path(out, 'README.md')))
 
 # Read in forward and reverse reads ####

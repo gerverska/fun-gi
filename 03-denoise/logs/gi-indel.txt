@@ -1,7 +1,2 @@
-14283 / 15477
-Gi-trimmed reads
-correctly demultiplexed
-
-203 reads with deletions in N06-N06
-17 reads with insertions in N09-N09
-
+primers total correct deletions insertions
+Gi 15477 14283 203 17

@@ -1,7 +1,2 @@
-69735 / 70697
-Fun-trimmed reads
-correctly demultiplexed
-
-102 reads with deletions in N03-N03
-14 reads with insertions in N06-N06
-
+primers total correct deletions insertions
+Fun 70697 69735 102 14
