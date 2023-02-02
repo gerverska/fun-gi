@@ -1,4 +1,4 @@
-ITSx run started at Sun Jan 29 13:58:57 2023.
+ITSx run started at Thu Feb  2 13:38:49 2023.
 -----------------------------------------------------------------
 Number of sequences in input file:       	7
 Sequences detected as ITS by ITSx:	6
@@ -26,4 +26,4 @@ ITS sequences by preliminary origin:
   Synurophyceae:   	0
   Tracheophyta:    	1
 -----------------------------------------------------------------
-ITSx run finished at Sun Jan 29 13:59:00 2023.
+ITSx run finished at Thu Feb  2 13:38:52 2023.
