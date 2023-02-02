@@ -1,6 +1,5 @@
 env
 data/raw
-*/logs/*_data
 scratch
 01-demultiplex/*.fq.gz
 02-trim/*.fq.gz
