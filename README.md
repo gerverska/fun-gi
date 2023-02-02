@@ -159,6 +159,8 @@ Descriptions are ongoing.
 
 [Methods](#methods)
 
+![test](01-demultiplex/logs/R1.html)
+
 | Fun forward error model                             | Fun reverse error model                             |
 |-----------------------------------------------------|-----------------------------------------------------|
 | ![fun-error-fwd](03-denoise/logs/fun-error-fwd.png) | ![fun-error-rev](03-denoise/logs/fun-error-rev.png) |
