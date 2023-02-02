@@ -1,7 +1,6 @@
 # Determine the viability of hamPCR ####
 
 # Load packages ####
-library(patchwork)
 library(ggplot2)
 library(caret)
 library(nlme)
@@ -128,6 +127,7 @@ load <- ggplot(standard, aes(x = log10(dilution), y = log10(mean_noga_load)
           legend.title = element_text(face = 'bold'))
 
 file.path(out, 'load.png') |> ggsave(load, width = 12, height = 9)
+file.path(out, 'load.rds') |> saveRDS(load, file = _)
 
 # Plot the relationship between frameshift pairs and model residuals ####
 set.seed(666)
@@ -145,6 +145,7 @@ shifts <- ggplot(standard, aes(x = fun_n, y = gi_n, color = res)) +
           legend.title = element_text(face = 'bold'))
 
 file.path(out, 'residuals.png') |> ggsave(shifts, width = 9, height = 6)
+file.path(out, 'residuals.rds') |> saveRDS(shifts, file = _)
 
 # Extract OTU tables from the entire dataset ####
 fun.tab <- subset(meta, template == 'dfssmt',
@@ -195,6 +196,7 @@ taxa <- ggplot(long, aes(x = id, y = value, fill = OTU)) +
           axis.ticks.x = element_blank())
 
 file.path(out, 'taxa.png') |> ggsave(taxa, width = 6, height = 6)
+file.path(out, 'taxa.rds') |> saveRDS(taxa, file = _)
 
 # Compare relative abundance and load hierarchical clustering assignments ####
 rownames(fun.ra) <- 1:nrow(fun.ra)

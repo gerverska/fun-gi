@@ -51,9 +51,11 @@ denoise <- function(marker){
     err.fwd <- learnErrors(marker.fwd, multithread = threads, randomize = T)
     err.fwd.plot <- plotErrors(err.fwd, nominalQ = T) + ggtitle(paste(insert, 'forward read error model'))
     file.path(logs, paste0(marker, '-error-fwd.png')) |> ggsave(err.fwd.plot, width = 12, height = 9)
+    file.path(logs, paste0(marker, '-error-fwd.rds')) |> saveRDS(err.fwd.plot, file = _)
     err.rev <- learnErrors(marker.rev, multithread = threads, randomize = T)
     err.rev.plot <- plotErrors(err.rev, nominalQ = T) + ggtitle(paste(insert, 'reverse read error model'))
     file.path(logs, paste0(marker, '-error-rev.png')) |> ggsave(err.rev.plot, width = 12, height = 9)
+    file.path(logs, paste0(marker, '-error-rev.rds')) |> saveRDS(err.rev.plot, file = _)
     
     # Denoise reads in both directions ####
     dada.fwd <- dada(derep.fwd, err = err.fwd, multithread = threads, pool = 'pseudo')
@@ -112,11 +114,10 @@ denoise <- function(marker){
     in.start <- which(shift$pair == start) + 1
     in.sum <- shift[in.start:nrow(shift), 'depth'] |> sum()
     
-    paste0(correct, ' / ', total, '\n', insert, '-trimmed reads\ncorrectly demultiplexed', '\n\n',
-           del.sum, ' reads with deletions in ', stop, '\n',
-           in.sum, ' reads with insertions in ', start, '\n\n') |>
-        cat(file = file.path(logs, paste0(marker, '-indel.txt')
-        ))
+    indel <- data.frame(primers = insert, total = total, correct = correct,
+                        deletions = del.sum, insertions = in.sum)
+    
+    file.path(logs, paste0(marker, '-indel.txt')) |> write.table(indel, file = _, row.names = F, quote = F)
     
     # Plot frameshift errors ####
     frameshift <- ggplot(shift, aes(x = pair, y = depth)) +
@@ -132,7 +133,8 @@ denoise <- function(marker){
               axis.title.x = element_text(face = 'bold'),
               axis.title.y = element_text(face = 'bold'))
     
-    file.path(logs, paste0(marker, '-frameshift.png')) |> ggsave(frameshift, width = 12, height = 9)
+    file.path(out, paste0(marker, '-frameshift.png')) |> ggsave(frameshift, width = 12, height = 9)
+    file.path(out, paste0(marker, '-frameshift.rds')) |> saveRDS(frameshift, file = _)
 }
 
 # 04-compile.r ####
