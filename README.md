@@ -159,17 +159,17 @@ Descriptions are ongoing.
 
 [Methods](#methods)
 
-| Fun forward error model                                                                  | Fun reverse error model                             |
-|------------------------------------------------------------------------------------------|-----------------------------------------------------|
-| [![fun-error-fwd](03-denoise/logs/fun-error-fwd.png)](03-denoise/logs/fun-error-fwd.png) | ![fun-error-rev](03-denoise/logs/fun-error-rev.png) |
+| Fun forward error model                             | Fun reverse error model                             |
+|-----------------------------------------------------|-----------------------------------------------------|
+| ![fun-error-fwd](03-denoise/logs/fun-error-fwd.png) | ![fun-error-rev](03-denoise/logs/fun-error-rev.png) |
 
 | Gi forward error model                            | Gi reverse error model                            |
 |---------------------------------------------------|---------------------------------------------------|
 | ![gi-error-fwd](03-denoise/logs/gi-error-fwd.png) | ![gi-error-rev](03-denoise/logs/gi-error-rev.png) |
 
-| Fun frameshift pairs                                  | Gi frameshift pairs                                  |
-|-------------------------------------------------------|------------------------------------------------------|
-| ![fun-frameshift](03-denoise/logs/fun-frameshift.png) | ![gi-frameshift](03-denoise/logs/fun-frameshift.png) |
+| Fun frameshift pairs                                  | Gi frameshift pairs                                 |
+|-------------------------------------------------------|-----------------------------------------------------|
+| ![fun-frameshift](03-denoise/logs/fun-frameshift.png) | ![gi-frameshift](03-denoise/logs/gi-frameshift.png) |
 
 ### Compile
 
