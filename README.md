@@ -1,7 +1,7 @@
 fun-gi: hamPCR + Douglas-fir + needle fungi
 ================
 Kyle A. Gervers
-2023-02-01
+2023-02-02
 
 > This work is unpublished. All results shown are preliminary.
 
