@@ -69,17 +69,66 @@ A `make` implementation is on the horizon...
 Descriptions are ongoing.
 
 ### Demultiplex
+[Methods](#methods)
 
-```{r demultiplex, include=TRUE}
+#### Forward reads
+[Demultiplex](#demultiplex)
+
+```{r demultiplex-fwd, include=TRUE}
 
 htmltools::includeHTML(file.path('01-demultiplex', 'logs', 'R1.html'))
 
 ```
 
+#### Reverse reads
+[Demultiplex](#demultiplex)
+
+```{r demultiplex-rev, include=TRUE}
+
+htmltools::includeHTML(file.path('01-demultiplex', 'logs', 'R2.html'))
+
+```
+
 ### Trim
+
+#### Forward reads
+[Trim](#trim)
+
+```{r trim-fwd, include=TRUE}
+
+htmltools::includeHTML(file.path('02-trim', 'logs', 'trim3-R1.html'))
+
+```
+
+#### Reverse reads
+[Trim](#trim)
+
+```{r trim-rev, include=TRUE}
+
+htmltools::includeHTML(file.path('02-trim', 'logs', 'trim3-R2.html'))
+
+```
 
 ### Denoise
 [Methods](#methods)
+
+#### Forward reads
+[Denoise](#denoise)
+
+```{r denoise-fwd, include=TRUE}
+
+htmltools::includeHTML(file.path('03-denoise', 'logs', 'filt-R1.html'))
+
+```
+
+#### Reverse reads
+[Denoise](#denoise)
+
+```{r denoise-rev, include=TRUE}
+
+htmltools::includeHTML(file.path('03-denoise', 'logs', 'filt-R2.html'))
+
+```
 
 Fun forward error model | Fun reverse error model
 --- | ---
@@ -121,8 +170,6 @@ cat 04-compile/logs/gi-lulu.txt
 [Methods](#methods)
 
 #### Base model
-
-##### Full model residuals
 
 ```
 Regress NOGA load onto known NOGA dilution, without accounting for Fun + Gi frameshifts
