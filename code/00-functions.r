@@ -109,12 +109,16 @@ denoise <- function(marker){
     correct <- shift |> subset(pair %in% pairs, select = 'depth') |> sum()
     
     del.stop <- which(shift$pair == stop) - 1 
+    del.correct <- shift[shift$pair == stop, 'depth'] |> sum()
     del.sum <- shift[1:del.stop, 'depth'] |> sum()
     
     in.start <- which(shift$pair == start) + 1
+    in.correct <- shift[shift$pair == start, 'depth'] |> sum()
     in.sum <- shift[in.start:nrow(shift), 'depth'] |> sum()
     
-    indel <- data.frame(primers = insert, total = total, correct = correct,
+    indel <- data.frame(primers = insert, total = total,
+                        correct = correct,
+                        del.correct = del.correct, in.correct = in.correct,
                         deletions = del.sum, insertions = in.sum)
     
     file.path(logs, paste0(marker, '-indel.txt')) |> write.table(indel, file = _, row.names = F, quote = F)

@@ -147,7 +147,7 @@ shifts <- ggplot(standard, aes(x = fun_n, y = gi_n, color = res)) +
 file.path(out, 'residuals.png') |> ggsave(shifts, width = 9, height = 6)
 file.path(out, 'residuals.rds') |> saveRDS(shifts, file = _)
 
-# Extract OTU tables from the entire dataset ####
+# Extract OTU tables for DFSSMT ####
 fun.tab <- subset(meta, template == 'dfssmt',
                   select = colnames(meta)[grepl('fun_OTU', colnames(meta)) == T])
 gi.reads <- subset(meta, template == 'dfssmt',

@@ -161,7 +161,11 @@ calc.wide <- reshape(calc,
 
 # Combine the rarefied output and the full metadata into a single dataframe ####
 meta <- merge(full, calc.wide, by = 'combo', all = T)
-fun.gi <- list(meta = meta,
+tab <- meta |> subset(select = colnames(meta)[grepl('OTU', colnames(meta)) == T])
+rownames(tab) <- meta$combo
+fun.gi <- list(depth = depth,
+               tab = tab,
+               meta = meta,
                fun_seq = fun.lulu$seq,
                tax = fun.lulu$tax,
                boot = fun.lulu$boot,

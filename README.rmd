@@ -68,31 +68,118 @@ A `make` implementation is on the horizon...
 
 Descriptions are ongoing.
 
+```{r logs, include=TRUE}
+# Demultiplex ####
+
+# Trim ####
+
+# Denoise ####
+log03.fun <- read.table(file.path('03-denoise', 'logs', 'fun-reads.txt'), header = T) |>
+    subset(select = -sample) |> colSums(na.rm = T)
+log03.gi <- read.table(file.path('03-denoise', 'logs', 'gi-reads.txt'), header = T) |> 
+    subset(select = -sample) |> colSums(na.rm = T)
+
+fun.indel <- read.table(file.path('03-denoise', 'logs', 'fun-indel.txt'), header = T) # Need to re-run denoise!!!
+gi.indel <- read.table(file.path('03-denoise', 'logs', 'gi-indel.txt'), header = T)
+
+fun.asv <- readRDS(file.path('03-denoise', 'fun-seq-tab.rds')) |> colnames() |> length()
+gi.asv <- readRDS(file.path('03-denoise', 'gi-seq-tab.rds')) |> colnames() |> length()
+
+# Compile ####
+fun.lulu <- readRDS(file.path('04-compile', 'fun-lulu.rds'))
+fun.otu <- fun.lulu$tab |> colnames() |> length()
+gi.lulu <- readRDS(file.path('04-compile', 'gi-lulu.rds'))
+gi.otu <- gi.lulu$tab |> colnames() |> length()
+
+# Rarefy ####
+rarefy <- readRDS(file.path('05-rarefy', 'fun-gi.rds')) # Need to add an element that reports depth for rarefaction
+depth <- rarefy$tab |> rowSums() > rarefy$depth
+pass <- depth[depth == T] |> length()
+tax <- rarefy$tax
+tax$stat <- 'Rank'
+boot <- rarefy$boot
+boot$stat <- 'Bootstrap'
+tax.boot <- rbind(tax, boot)
+tax.boot$id <- rownames(tax) |> rep(2)
+
+ranks <- colnames(tax.boot)
+ranks <- ranks[1:7]
+
+long.tax.boot <- reshape(tax.boot,
+                         direction = 'long', varying = ranks,
+                         v.names = 'value', times = ranks,
+                         timevar = 'rank', idvar = c('id', 'stat'))
+
+```
+
 ### Demultiplex
 [Methods](#methods)
 
-#### Forward reads
-[Demultiplex](#demultiplex)
+#### Pheniqs demultiplexing
 
-#### Reverse reads
-[Demultiplex](#demultiplex)
+<details>
+  <summary>Expand</summary>
+```{bash pheniqs, include=TRUE, echo=FALSE, comment=""}
+
+cat 01-demultiplex/logs/pheniqs.txt
+
+```
+</details>
+
+```{r demultiplex, include=TRUE}
+
+demultiplex <- read.table(file.path('01-demultiplex', 'logs', 'R1_data', 'multiqc_general_stats.txt'), header = T) 
+total <- demultiplex |> subset(select = FastQC_mqc.generalstats.fastqc.total_sequences) |> sum()
+undeter <- demultiplex |> subset(Sample == 'undetermined-R1', select = FastQC_mqc.generalstats.fastqc.total_sequences) |> sum()
+
+study <- read.table(file.path('01-demultiplex', 'logs', 'reads.txt'), header = T) |> subset(select = reads) |> sum()
+
+perc.study <- (study / total) |> round(digits = 2) * 100
+perc.undeter <- (undeter / total) |> round(digits = 2) * 100
+
+sums <- lapply(list(total, study, undeter), formatC, format = 'd', big.mark = ',')
+
+```
+
+Out of `r sums[[1]]` read pairs (reads) obtained from the sequencing run, `r sums[[2]]` reads (`r perc.study`%) were demultiplexed with indices used in this experiment. Overall, `r sums[[3]]` reads (`r perc.undeter`%) could not be demultiplexed to any expected index pair. This large proportion of undemultiplexed reads is currently under investigation.
 
 ### Trim
 
-#### Forward reads
-[Trim](#trim)
+```{r trim, include=TRUE}
 
-#### Reverse reads
-[Trim](#trim)
+trim <- read.table(file.path('02-trim', 'logs', 'trim3-reads.txt'), header = T) |>
+    subset(select = reads) |> sum() |> formatC(format = 'd', big.mark = ',')
+trim.error <- read.table(file.path('02-trim', 'logs', 'trim-error-reads.txt'), header = T) |>
+    subset(select = trimmed) |> sum()
+
+perc.trim.error <- (trim.error / undeter) |> round(digits = 2) * 100
+
+trim.error <- trim.error |> formatC(format = 'd', big.mark = ',')
+
+```
+
+Although only certain combinations of frameshifted primers were used, all pairwise combinations of potential frameshifts were used to trim Fun and Gi reads. Additionally, shorter and longer frameshifts were also used to identify instances were insertions and deletions in frameshift sequences occurred. This approach initially inflates the number of trimmed reads. Accordingly, a total of `r trim` reads were trimmed with Fun or Gi primers. `r trim.error` reads among the `r sums[[3]]` undemuliplexed reads (`r perc.trim.error`%) could be trimmed with Fun or Gi primers, suggesting that most reads were properly demultiplexed in the previous step with Pheniqs.
 
 ### Denoise
 [Methods](#methods)
 
-#### Forward reads
-[Denoise](#denoise)
+```{r denoise, include=TRUE}
 
-#### Reverse reads
-[Denoise](#denoise)
+fun.denoise <- read.table(file.path('03-denoise', 'logs', 'fun-reads.txt'), header = T) |>
+    subset(select = -sample) |> colSums(na.rm = T) |> lapply(formatC, format = 'd', big.mark = ',')
+gi.denoise <- read.table(file.path('03-denoise', 'logs', 'gi-reads.txt'), header = T) |> 
+    subset(select = -sample) |> colSums(na.rm = T) |> lapply(formatC, format = 'd', big.mark = ',')
+
+fun.indel <- read.table(file.path('03-denoise', 'logs', 'fun-indel.txt'), header = T) # Need to re-run denoise!!!
+gi.indel <- read.table(file.path('03-denoise', 'logs', 'gi-indel.txt'), header = T)
+indel <- rbind(fun.indel, gi.indel)
+
+fun.asv <- readRDS(file.path('03-denoise', 'fun-seq-tab.rds')) |>
+    colnames() |> length() |> formatC(format = 'd', big.mark = ',')
+gi.asv <- readRDS(file.path('03-denoise', 'gi-seq-tab.rds')) |>
+    colnames() |> length() |> formatC(format = 'd', big.mark = ',')
+
+```
 
 Fun forward error model | Fun reverse error model
 --- | ---
@@ -104,7 +191,7 @@ Gi forward error model | Gi reverse error model
 
 Fun frameshift pairs | Gi frameshift pairs
 --- | ---
-![fun-frameshift](03-denoise/logs/fun-frameshift.png) | ![gi-frameshift](03-denoise/logs/gi-frameshift.png)
+![fun-frameshift](03-denoise/fun-frameshift.png) | ![gi-frameshift](03-denoise/gi-frameshift.png)
 
 ### Compile
 [Methods](#methods)
