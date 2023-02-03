@@ -190,6 +190,7 @@ lulu.clust <- function(tab, seq, name, min.match = 0.97){
     
     # Use LULU to make a curation object and update the OTU table and sequences ####
     curation <- lulu(t.nochim.tab, matchlist, minimum_match = (min.match * 100))
+    file.path(logs, paste0(marker, '-curation.rds')) |> saveRDS(curation, file = _)
     lulu.tab <- curation$curated_table |> t() |> as.data.frame()
     lulu.seq <- nochim.seq[names(nochim.seq) %in% curation$curated_otus]
     

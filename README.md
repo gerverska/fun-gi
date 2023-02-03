@@ -1,7 +1,7 @@
 fun-gi: hamPCR + Douglas-fir + needle fungi
 ================
 Kyle A. Gervers
-2023-02-02
+2023-02-03
 
 > This work is unpublished. All results shown are preliminary.
 
@@ -11,7 +11,6 @@ Kyle A. Gervers
 - [Overview](#overview)
 - [Reproducibility](#reproducibility)
 - [Installation](#installation)
-- [Methods](#methods)
 - [Results](#results)
 
 ## hamPCR
@@ -138,7 +137,7 @@ script `00-build.sh`
 
 A `make` implementation is on the horizon…
 
-## Methods
+## Results
 
 [Return](#sections)
 
@@ -153,7 +152,7 @@ Descriptions are ongoing.
 
 ### Demultiplex
 
-[Methods](#methods)
+[Results](#results)
 
 #### Pheniqs demultiplexing
 
@@ -853,51 +852,310 @@ Expand
 
 </details>
 
+#### 
+
 Out of 485,439 read pairs (reads) obtained from the sequencing run,
 128,919 reads (27%) were demultiplexed with indices used in this
 experiment. Overall, 62,491 reads (13%) could not be demultiplexed to
-any expected index pair.
+any expected index pair. This large proportion of undemultiplexed reads
+was investigated further.
 
 ### Trim
+
+[Results](#results)
+
+#### Cutadapt primer trimming
+
+<details>
+<summary>
+Expand
+</summary>
+
+    This is cutadapt 4.2 with Python 3.10.8
+    Command line parameters: -e 0.1 --no-indels -j 32 --discard-untrimmed -g ^file:scratch/rev-adapters.fa -o scratch/trim2/P01-02-D-n09_gi_fwd-{name}-R2.fq.gz -p scratch/trim2/P01-02-D-n09_gi_fwd-{name}-R1.fq.gz scratch/trim1/P01-02-D-n09_gi_fwd-R2.fq.gz scratch/trim1/P01-02-D-n09_gi_fwd-R1.fq.gz
+    Processing paired-end reads on 32 cores ...
+    Finished in 0.288 s (9282.220 µs/read; 0.01 M reads/minute).
+
+    === Summary ===
+
+    Total read pairs processed:                 31
+      Read 1 with adapter:                       1 (3.2%)
+    Pairs written (passing filters):             1 (3.2%)
+
+    Total basepairs processed:        14,601 bp
+      Read 1:         7,781 bp
+      Read 2:         6,820 bp
+    Total written (filtered):            444 bp (3.0%)
+      Read 1:           224 bp
+      Read 2:           220 bp
+
+    === First read: Adapter n01_fun_rev ===
+
+    Sequence: NAACTTTYRRCAAYGGATCWCT; Type: anchored 5'; Length: 22; Trimmed: 0 times
+
+    === First read: Adapter n02_fun_rev ===
+
+    Sequence: NNAACTTTYRRCAAYGGATCWCT; Type: anchored 5'; Length: 23; Trimmed: 0 times
+
+    === First read: Adapter n03_fun_rev ===
+
+    Sequence: NNNAACTTTYRRCAAYGGATCWCT; Type: anchored 5'; Length: 24; Trimmed: 0 times
+
+    === First read: Adapter n04_fun_rev ===
+
+    Sequence: NNNNAACTTTYRRCAAYGGATCWCT; Type: anchored 5'; Length: 25; Trimmed: 0 times
+
+    === First read: Adapter n05_fun_rev ===
+
+    Sequence: NNNNNAACTTTYRRCAAYGGATCWCT; Type: anchored 5'; Length: 26; Trimmed: 0 times
+
+    === First read: Adapter n06_fun_rev ===
+
+    Sequence: NNNNNNAACTTTYRRCAAYGGATCWCT; Type: anchored 5'; Length: 27; Trimmed: 0 times
+
+    === First read: Adapter n07_fun_rev ===
+
+    Sequence: NNNNNNNAACTTTYRRCAAYGGATCWCT; Type: anchored 5'; Length: 28; Trimmed: 0 times
+
+    === First read: Adapter n08_fun_rev ===
+
+    Sequence: NNNNNNNNAACTTTYRRCAAYGGATCWCT; Type: anchored 5'; Length: 29; Trimmed: 0 times
+
+    === First read: Adapter n04_gi_rev ===
+
+    Sequence: NNNNATGCCTGAGCACAAACAG; Type: anchored 5'; Length: 22; Trimmed: 0 times
+
+    === First read: Adapter n05_gi_rev ===
+
+    Sequence: NNNNNATGCCTGAGCACAAACAG; Type: anchored 5'; Length: 23; Trimmed: 0 times
+
+    === First read: Adapter n06_gi_rev ===
+
+    Sequence: NNNNNNATGCCTGAGCACAAACAG; Type: anchored 5'; Length: 24; Trimmed: 0 times
+
+    === First read: Adapter n07_gi_rev ===
+
+    Sequence: NNNNNNNATGCCTGAGCACAAACAG; Type: anchored 5'; Length: 25; Trimmed: 0 times
+
+    === First read: Adapter n08_gi_rev ===
+
+    Sequence: NNNNNNNNATGCCTGAGCACAAACAG; Type: anchored 5'; Length: 26; Trimmed: 0 times
+
+    === First read: Adapter n09_gi_rev ===
+
+    Sequence: NNNNNNNNNATGCCTGAGCACAAACAG; Type: anchored 5'; Length: 27; Trimmed: 1 times
+
+    No. of allowed errors: 1
+
+    Overview of removed sequences
+    length  count   expect  max.err error counts
+    27  1   0.0 1   1
+
+
+    === First read: Adapter n10_gi_rev ===
+
+    Sequence: NNNNNNNNNNATGCCTGAGCACAAACAG; Type: anchored 5'; Length: 28; Trimmed: 0 times
+
+    === First read: Adapter n11_gi_rev ===
+
+    Sequence: NNNNNNNNNNNATGCCTGAGCACAAACAG; Type: anchored 5'; Length: 29; Trimmed: 0 times
+
+</details>
+
+#### Atropos overlap trimming
+
+<details>
+<summary>
+Expand
+</summary>
+
+    2023-01-27 12:24:26,567 INFO: This is Atropos 1.1.31 with Python 3.10.8
+    2023-01-27 12:24:26,574 INFO: Trimming 2 adapters with at most 10.0% errors in paired-end mode ...
+    2023-01-27 12:24:26,610 INFO: Starting 31 worker processes
+    2023-01-27 12:24:26,683 INFO: Starting 1 worker processes
+    =======
+    Atropos
+    =======
+
+    Atropos version: 1.1.31
+    Python version: 3.10.8
+    Command line parameters: trim -e 0.1 --aligner insert --insert-match-error-rate 0.2 -T 32 -a AGWGATCCRTTGYYRAAAGTT -A AYTTAAGCATATCAATAAGCGGAGG -o 02-trim/P01-01-C-n04_fun_fwd-n01_fun_rev-rc-R1.fq.gz -p 02-trim/P01-01-C-n04_fun_fwd-n01_fun_rev-rc-R2.fq.gz -pe1 scratch/trim2/P01-01-C-n04_fun_fwd-n01_fun_rev-R1.fq.gz -pe2 scratch/trim2/P01-01-C-n04_fun_fwd-n01_fun_rev-R2.fq.gz
+
+    Sample ID: P01-01-C-n04_fun_fwd-n01_fun_rev-R
+    Input format: FASTQ, Paired, w/ Qualities
+    Input files:
+      /nfs1/BPP/Spatafora_Lab/gerversk/projects/fun-gi/scratch/trim2/P01-01-C-n04_fun_fwd-n01_fun_rev-R1.fq.gz
+      /nfs1/BPP/Spatafora_Lab/gerversk/projects/fun-gi/scratch/trim2/P01-01-C-n04_fun_fwd-n01_fun_rev-R2.fq.gz
+
+    Start time: 2023-01-27T12:24:26.570431
+    Wallclock time: 0.11 s (109267 us/read; 0.00 M reads/minute)
+    CPU time (main process): 0.11 s
+
+    --------
+    Trimming
+    --------
+
+    Pairs                               records fraction
+    ----------------------------------- ------- --------
+    Total read pairs processed:            1
+      Read 1 with adapter:                 0    0
+      Read 2 with adapter:                 0    0
+    Pairs written (passing filters):       1 100.0%
+
+    Base pairs                            bp fraction
+    ----------------------------------- ---- --------
+    Total bp processed:                  451
+      Read 1:                            222
+      Read 2:                            229
+    Total bp written (filtered):         451 100.0%
+      Read 1:                            222 100.0%
+      Read 2:                            229 100.0%
+
+    ---------------------
+    First read: Adapter 1
+    ---------------------
+
+    Sequence              Type       Length Trimmed (x)
+    --------------------- ---------- ------ -----------
+    AGWGATCCRTTGYYRAAAGTT regular 3'     21           0
+
+    ----------------------
+    Second read: Adapter 2
+    ----------------------
+
+    Sequence                  Type       Length Trimmed (x)
+    ------------------------- ---------- ------ -----------
+    AYTTAAGCATATCAATAAGCGGAGG regular 3'     25           0
+
+    2023-01-27 12:24:38,204 INFO: This is Atropos 1.1.31 with Python 3.10.8
+    2023-01-27 12:24:38,211 INFO: Trimming 2 adapters with at most 10.0% errors in paired-end mode ...
+    2023-01-27 12:24:38,249 INFO: Starting 31 worker processes
+    2023-01-27 12:24:38,325 INFO: Starting 1 worker processes
+    =======
+    Atropos
+    =======
+
+    Atropos version: 1.1.31
+    Python version: 3.10.8
+    Command line parameters: trim -e 0.1 --aligner insert --insert-match-error-rate 0.2 -T 32 -a CTGTTTGTGCTCAGGCAT -A GAGGTAGATATTCCAGAACACG -o 02-trim/P01-01-C-n07_gi_fwd-n06_gi_rev-rc-R1.fq.gz -p 02-trim/P01-01-C-n07_gi_fwd-n06_gi_rev-rc-R2.fq.gz -pe1 scratch/trim2/P01-01-C-n07_gi_fwd-n06_gi_rev-R1.fq.gz -pe2 scratch/trim2/P01-01-C-n07_gi_fwd-n06_gi_rev-R2.fq.gz
+
+    Sample ID: P01-01-C-n07_gi_fwd-n06_gi_rev-R
+    Input format: FASTQ, Paired, w/ Qualities
+    Input files:
+      /nfs1/BPP/Spatafora_Lab/gerversk/projects/fun-gi/scratch/trim2/P01-01-C-n07_gi_fwd-n06_gi_rev-R1.fq.gz
+      /nfs1/BPP/Spatafora_Lab/gerversk/projects/fun-gi/scratch/trim2/P01-01-C-n07_gi_fwd-n06_gi_rev-R2.fq.gz
+
+    Start time: 2023-01-27T12:24:38.207855
+    Wallclock time: 0.11 s (57120 us/read; 0.00 M reads/minute)
+    CPU time (main process): 0.11 s
+
+    --------
+    Trimming
+    --------
+
+    Pairs                               records fraction
+    ----------------------------------- ------- --------
+    Total read pairs processed:            2
+      Read 1 with adapter:                 0    0
+      Read 2 with adapter:                 0    0
+    Pairs written (passing filters):       2 100.0%
+
+    Base pairs                            bp fraction
+    ----------------------------------- ---- --------
+    Total bp processed:                  898
+      Read 1:                            444
+      Read 2:                            454
+    Total bp written (filtered):         898 100.0%
+      Read 1:                            444 100.0%
+      Read 2:                            454 100.0%
+
+    ---------------------
+    First read: Adapter 1
+    ---------------------
+
+    Sequence           Type       Length Trimmed (x)
+    ------------------ ---------- ------ -----------
+    CTGTTTGTGCTCAGGCAT regular 3'     18           0
+
+    ----------------------
+    Second read: Adapter 2
+    ----------------------
+
+    Sequence               Type       Length Trimmed (x)
+    ---------------------- ---------- ------ -----------
+    GAGGTAGATATTCCAGAACACG regular 3'     22           0
+
+</details>
+
+#### 
 
 Although only certain combinations of frameshifted primers were used,
 all pairwise combinations of potential frameshifts were used to trim Fun
 and Gi reads. Additionally, shorter and longer frameshifts were also
 used to identify instances were insertions and deletions in frameshift
 sequences occurred. This approach initially inflates the number of
-trimmed reads. Accordingly, a total of 89,707 reads were trimmed with
-Fun or Gi primers. 1,910 read pairs among the 62,491 undemuliplexed
-reads (%3).
+trimmed reads. Accordingly, a total of 89,707 reads (70% of
+demultiplexed reads) where trimmed with Fun or Gi primers. 1,910 reads
+among the 62,491 undemuliplexed reads (3%) could be trimmed with Fun or
+Gi primers, suggesting that most potential reads were properly
+demultiplexed in the previous step with Pheniqs.
 
 ### Denoise
 
-[Methods](#methods)
+[Results](#results)
 
-#### Forward reads
+#### DADA2 error-modeling
 
-[Denoise](#denoise)
+<details>
+<summary>
+Expand
+</summary>
+<img src="README_files/figure-gfm/error.model-1.png" style="display: block; margin: auto;" /><img src="README_files/figure-gfm/error.model-2.png" style="display: block; margin: auto;" />
+</details>
 
-#### Reverse reads
+#### 
 
-[Denoise](#denoise)
+Sequence error correction (denoising) with DADA2 was performed
+separately for Fun and Gi reads. Prior to quality filtering and
+trimming, 72,673 reads (81%) had been trimmed with Fun primers, while
+17,034 reads (19%) were trimmed with Gi primers. Filtering and trimming
+retained most reads (Fun = 71,139, Gi = 16,780), but this loss continued
+through denoising and read merging. Overall, Fun reads retained a
+greater percentage of sequences (97%) than Gi reads (91%).
 
-| Fun forward error model                             | Fun reverse error model                             |
-|-----------------------------------------------------|-----------------------------------------------------|
-| ![fun-error-fwd](03-denoise/logs/fun-error-fwd.png) | ![fun-error-rev](03-denoise/logs/fun-error-rev.png) |
+#### Frameshift trimming profiles
 
-| Gi forward error model                            | Gi reverse error model                            |
-|---------------------------------------------------|---------------------------------------------------|
-| ![gi-error-fwd](03-denoise/logs/gi-error-fwd.png) | ![gi-error-rev](03-denoise/logs/gi-error-rev.png) |
+<img src="README_files/figure-gfm/frameshift-1.png" style="display: block; margin: auto;" />
 
-| Fun frameshift pairs                             | Gi frameshift pairs                            |
-|--------------------------------------------------|------------------------------------------------|
-| ![fun-frameshift](03-denoise/fun-frameshift.png) | ![gi-frameshift](03-denoise/gi-frameshift.png) |
+To examine the feasibility of frameshift indexing for larger libraries,
+indel occurrence rate (i.e., the rate at which single or multiple
+insertions and deletions occurred) was investigated using the shortest
+and longest expected frameshift pairs associated with Fun and Gi
+primers. Instances in which trimmed and denoised reads had shorter or
+longer frameshifts than the shortest and longest expected frameshift
+pairs were identified as instances of deletion and insertion,
+respectively. Overall, 99% of Fun reads had expected frameshift pairs
+used in this experiment, but this rate was lower (92%) for Gi reads.
+Insertion occurrence rates were generally fairly low (Fun = 0.1%, Gi =
+0.6%) relative to deletion occurrence rate (Fun = 1%, Gi = 6%), with Gi
+reads generally experiencing higher rates of indels.
+
+Retaining all denoised samples (even those which did not match any
+expected frameshift pair), a total of 53 Fun amplicon sequencing
+variants (ASVs) and 59 Gi ASVs were obtained. Many of these ASVs
+belonged to non-target frameshifts, so these erroneous samples were not
+retained in downstream analyses.
 
 ### Compile
 
-[Methods](#methods)
+[Results](#results)
 
 #### LULU post-clustering of Fun ASVs
+
+<details>
+<summary>
+Expand
+</summary>
 
 
     ####processing: fun_OTU.1 #####
@@ -944,7 +1202,14 @@ reads (%3).
     ------relative cooccurence: 0
     No parent found!
 
+</details>
+
 #### LULU post-clustering of Gi ASVs
+
+<details>
+<summary>
+Expand
+</summary>
 
 
     ####processing: gi_OTU.1 #####
@@ -974,15 +1239,62 @@ reads (%3).
 
     ------checking: gi_OTU.2
 
+</details>
+
+#### 
+
+To group merged ASVs into ideally less artifactual operational taxonomic
+units (OTUs) Fun and Gi ASVs were post-clustered with the
+co-occurrence-informed LULU algorithm. In order for a less abundant
+“child” ASV to cluster with a more abundant “parent” ASV, the child
+needed to occur with the parent in 95% of samples. Fun ASV sequences
+also needed to have 97% similarity to investigate child-parent status,
+while 85% similarity was permitted for Gi ASVs. These percentages were
+not thoroughly investigated, and higher similarity thresholds will
+likely be tolerated. After clustering, only 3 Fun OTUs were retained.
+The most abundant OTU (OTU.1) was assigned to NOGA (*Nothophaeocryptopus
+gaeumannii*, bootstrap support = 95%). This was followed by OTU.2, which
+was assigned to *Zasmidium pseudotsugae* with 97% bootstrap support. A
+third OTU was also assigned to NOGA with lower support (81%), but this
+OTU occurred as a single read in a single negative control sample. Only
+one other negative control sample was contaminated with a single OTU.1
+read. As expected, a single Gi OTU was obtained after clustering.
+
 ### Rarefy
 
-[Methods](#methods)
+[Results](#results)
 
-![dilution-bias](05-rarefy/logs/dilution-bias.png)
+#### Sequencing bias prior to rarefaction
+
+<img src="README_files/figure-gfm/bias-1.png" style="display: block; margin: auto;" />
+
+#### 
+
+For each sample, a load index for each Fun OTU was calculated as the
+quotient of the number of reads associated with that Fun OTU divided by
+the number of reads associated with the single Gi OTU in that sample. To
+investigate bias in sequencing depth, the relationship between the load
+of NOGA (assigned to OTU.1) and the proportion of NOGA DNA diluted into
+PSME DNA was examined across samples associated with this standard
+curve. This relationship suggested that dilutions containing greater
+amounts of NOGA DNA were generally sequenced to greater depths compared
+to samples with less NOGA DNA. Given this, a rarefaction-based approach
+(involving repeated subsampling and averaging) was pursued in downstream
+analysis of the standard curve.
+
+All samples were randomly subsampled 1,000 times to a depth of 740 reads
+when read depth allowed. This depth was only partially explored, but it
+was chosen because it was the depth necessary to recover Gi reads from
+all subsamples (necessary to create a rarefied calculation of load). Out
+of 36, 27 had sufficient sequencing depth. Most samples that failed were
+among with the 8 samples of pooled needle DNA extractions (DFSSMT
+samples). Interpretation of these samples proceeded using non-rarefied
+estimates of load. These failures were likely due to known issues with
+amplification relative to samples involved in the NOGA standard curve.
 
 ### Analyze
 
-[Methods](#methods)
+[Results](#results)
 
 #### Base model
 
@@ -1008,23 +1320,37 @@ reads (%3).
 |-------------------------------------------------------|-----------------------------------------------------|-----------------------------------------------------|
 | ![full-residuals](06-analyze/logs/full-residuals.png) | ![fun-full-rand](06-analyze/logs/fun-full-rand.png) | ![gi-full-rand](06-analyze/logs/gi-full-rand.png)   |
 
-## Results
+#### 
 
-[Return](#sections)
+To test whether hamPCR-derived load calculations were incapable of
+represented known biological reality, fixed and mixed effect linear
+regression was performed with samples derived from the standard curve.
+Both full (mixed effect) and base (fixed effect) models included the
+proportion of NOGA DNA as an a fixed-effect, independent variable. The
+full model included Fun and Gi frameshift pairs as 4-level random
+effects. With more samples, each level of NOGA dilution would have
+samples associated with all combinations of Fun and Gi pairs (16) in
+order to investigate them as a fixed effect. Unfortunately, the effect
+of frameshift pair could only be accounted for with a mixed effect
+model. Full and base models were compared with a likelihood ratio test.
+The simplest model was retained if the null hypothesis could not be
+rejected. Leave-one-out cross-validation (LOOCV) was performed to
+investigate the sensitivity of this model to missing samples. Model
+residuals were also retained for further investigation.
 
 ### NOGA load regressed on NOGA dilution
 
-![dilution-load](06-analyze/load.png)
+<img src="README_files/figure-gfm/load-1.png" style="display: block; margin: auto;" />
 
 ### Base model residuals associated with each frameshift pair
 
-![residuals](06-analyze/residuals.png)
+<img src="README_files/figure-gfm/residuals-1.png" style="display: block; margin: auto;" />
 
 ### Comparing DFSSMT samples with relative abundance and fungal load data
 
 #### Raw metrics
 
-![taxa](06-analyze/taxa.png)
+<img src="README_files/figure-gfm/taxa-1.png" style="display: block; margin: auto;" />
 
 #### Hierarchical clustering
 

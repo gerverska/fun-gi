@@ -83,7 +83,8 @@ bias <- ggplot(standard, aes(x = log10(dilution), y = log10(reads)
           axis.title.x = element_text(face = 'bold'),
           axis.title.y = element_text(face = 'bold'))
 
-file.path(logs, 'dilution-bias.png') |> ggsave(bias, width = 9, height = 6)
+file.path(logs, 'bias.png') |> ggsave(bias, width = 9, height = 6)
+file.path(logs, 'bias.rds') |> saveRDS(bias, file = _)
 
 # Remove samples beneath target sequencing depth prior to rarefaction ####
 depth <- 740 # Need to show how we got at this number!!!

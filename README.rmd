@@ -16,7 +16,6 @@ knitr::opts_chunk$set(echo = F, include = F)
 * [Overview](#overview)
 * [Reproducibility](#reproducibility)
 * [Installation](#installation)
-* [Methods](#methods)
 * [Results](#results)
 
 ## hamPCR
@@ -56,7 +55,7 @@ bash code/00-build.sh
 ```
 A `make` implementation is on the horizon...
 
-## Methods
+## Results
 [Return](#sections)
 
 - [Demultiplex](#demultiplex)
@@ -68,52 +67,8 @@ A `make` implementation is on the horizon...
 
 Descriptions are ongoing.
 
-```{r logs, include=TRUE}
-# Demultiplex ####
-
-# Trim ####
-
-# Denoise ####
-log03.fun <- read.table(file.path('03-denoise', 'logs', 'fun-reads.txt'), header = T) |>
-    subset(select = -sample) |> colSums(na.rm = T)
-log03.gi <- read.table(file.path('03-denoise', 'logs', 'gi-reads.txt'), header = T) |> 
-    subset(select = -sample) |> colSums(na.rm = T)
-
-fun.indel <- read.table(file.path('03-denoise', 'logs', 'fun-indel.txt'), header = T) # Need to re-run denoise!!!
-gi.indel <- read.table(file.path('03-denoise', 'logs', 'gi-indel.txt'), header = T)
-
-fun.asv <- readRDS(file.path('03-denoise', 'fun-seq-tab.rds')) |> colnames() |> length()
-gi.asv <- readRDS(file.path('03-denoise', 'gi-seq-tab.rds')) |> colnames() |> length()
-
-# Compile ####
-fun.lulu <- readRDS(file.path('04-compile', 'fun-lulu.rds'))
-fun.otu <- fun.lulu$tab |> colnames() |> length()
-gi.lulu <- readRDS(file.path('04-compile', 'gi-lulu.rds'))
-gi.otu <- gi.lulu$tab |> colnames() |> length()
-
-# Rarefy ####
-rarefy <- readRDS(file.path('05-rarefy', 'fun-gi.rds')) # Need to add an element that reports depth for rarefaction
-depth <- rarefy$tab |> rowSums() > rarefy$depth
-pass <- depth[depth == T] |> length()
-tax <- rarefy$tax
-tax$stat <- 'Rank'
-boot <- rarefy$boot
-boot$stat <- 'Bootstrap'
-tax.boot <- rbind(tax, boot)
-tax.boot$id <- rownames(tax) |> rep(2)
-
-ranks <- colnames(tax.boot)
-ranks <- ranks[1:7]
-
-long.tax.boot <- reshape(tax.boot,
-                         direction = 'long', varying = ranks,
-                         v.names = 'value', times = ranks,
-                         timevar = 'rank', idvar = c('id', 'stat'))
-
-```
-
 ### Demultiplex
-[Methods](#methods)
+[Results](#results)
 
 #### Pheniqs demultiplexing
 
@@ -137,88 +92,199 @@ study <- read.table(file.path('01-demultiplex', 'logs', 'reads.txt'), header = T
 perc.study <- (study / total) |> round(digits = 2) * 100
 perc.undeter <- (undeter / total) |> round(digits = 2) * 100
 
-sums <- lapply(list(total, study, undeter), formatC, format = 'd', big.mark = ',')
-
 ```
 
-Out of `r sums[[1]]` read pairs (reads) obtained from the sequencing run, `r sums[[2]]` reads (`r perc.study`%) were demultiplexed with indices used in this experiment. Overall, `r sums[[3]]` reads (`r perc.undeter`%) could not be demultiplexed to any expected index pair. This large proportion of undemultiplexed reads is currently under investigation.
+####
+
+Out of `r total |> formatC(format = 'd', big.mark = ',')` read pairs (reads) obtained from the sequencing run, `r study |> formatC(format = 'd', big.mark = ',')` reads (`r perc.study`%) were demultiplexed with indices used in this experiment. Overall, `r undeter |> formatC(format = 'd', big.mark = ',')` reads (`r perc.undeter`%) could not be demultiplexed to any expected index pair. This large proportion of undemultiplexed reads was investigated further.
 
 ### Trim
+[Results](#results)
+
+#### Cutadapt primer trimming
+
+<details>
+  <summary>Expand</summary>
+```{bash cutadapt, include=TRUE, echo=FALSE, comment=""}
+
+cat 02-trim/logs/trim2-cutadapt.txt
+
+```
+</details>
+
+#### Atropos overlap trimming
+<details>
+  <summary>Expand</summary>
+```{bash atropos, include=TRUE, echo=FALSE, comment=""}
+
+cat 02-trim/logs/trim3-atropos-fun.txt 02-trim/logs/trim3-atropos-gi.txt
+
+```
+</details>
 
 ```{r trim, include=TRUE}
 
 trim <- read.table(file.path('02-trim', 'logs', 'trim3-reads.txt'), header = T) |>
-    subset(select = reads) |> sum() |> formatC(format = 'd', big.mark = ',')
+    subset(select = reads) |> sum()
 trim.error <- read.table(file.path('02-trim', 'logs', 'trim-error-reads.txt'), header = T) |>
     subset(select = trimmed) |> sum()
 
+perc.trim <- (trim / study) |> round(digits = 2) * 100
 perc.trim.error <- (trim.error / undeter) |> round(digits = 2) * 100
-
-trim.error <- trim.error |> formatC(format = 'd', big.mark = ',')
 
 ```
 
-Although only certain combinations of frameshifted primers were used, all pairwise combinations of potential frameshifts were used to trim Fun and Gi reads. Additionally, shorter and longer frameshifts were also used to identify instances were insertions and deletions in frameshift sequences occurred. This approach initially inflates the number of trimmed reads. Accordingly, a total of `r trim` reads were trimmed with Fun or Gi primers. `r trim.error` reads among the `r sums[[3]]` undemuliplexed reads (`r perc.trim.error`%) could be trimmed with Fun or Gi primers, suggesting that most reads were properly demultiplexed in the previous step with Pheniqs.
+####
+
+Although only certain combinations of frameshifted primers were used, all pairwise combinations of potential frameshifts were used to trim Fun and Gi reads. Additionally, shorter and longer frameshifts were also used to identify instances were insertions and deletions in frameshift sequences occurred. This approach initially inflates the number of trimmed reads. Accordingly, a total of `r trim |> formatC(format = 'd', big.mark = ',')` reads (`r perc.trim`% of demultiplexed reads) where trimmed with Fun or Gi primers. `r trim.error |> formatC(format = 'd', big.mark = ',')` reads among the `r undeter |> formatC(format = 'd', big.mark = ',')` undemuliplexed reads (`r perc.trim.error`%) could be trimmed with Fun or Gi primers, suggesting that most potential reads were properly demultiplexed in the previous step with Pheniqs.
 
 ### Denoise
-[Methods](#methods)
+[Results](#results)
+
+#### DADA2 error-modeling
+
+<details>
+  <summary>Expand</summary>
+  
+```{r error.model, include=TRUE, warning=FALSE, fig.align='center', fig.width=12}
+library(ggplot2)
+library(patchwork)
+
+fun.error.fwd <- readRDS(file.path('03-denoise', 'logs', 'fun-error-fwd.rds'))
+fun.error.rev <- readRDS(file.path('03-denoise', 'logs', 'fun-error-rev.rds'))
+
+gi.error.fwd <- readRDS(file.path('03-denoise', 'logs', 'gi-error-fwd.rds'))
+gi.error.rev <- readRDS(file.path('03-denoise', 'logs', 'gi-error-rev.rds'))
+
+fun.error.fwd + fun.error.rev
+
+gi.error.fwd + gi.error.rev
+
+```  
+</details>
+
+####
 
 ```{r denoise, include=TRUE}
 
 fun.denoise <- read.table(file.path('03-denoise', 'logs', 'fun-reads.txt'), header = T) |>
-    subset(select = -sample) |> colSums(na.rm = T) |> lapply(formatC, format = 'd', big.mark = ',')
+    subset(select = -sample) |> colSums(na.rm = T)
 gi.denoise <- read.table(file.path('03-denoise', 'logs', 'gi-reads.txt'), header = T) |> 
-    subset(select = -sample) |> colSums(na.rm = T) |> lapply(formatC, format = 'd', big.mark = ',')
+    subset(select = -sample) |> colSums(na.rm = T)
 
-fun.indel <- read.table(file.path('03-denoise', 'logs', 'fun-indel.txt'), header = T) # Need to re-run denoise!!!
+perc.fun <- (fun.denoise[[1]] / trim) |> round(digits = 2) * 100
+perc.gi <- (gi.denoise[[1]] / trim) |> round(digits = 2) * 100
+
+perc.fun.merge <- (fun.denoise[[5]] / fun.denoise[[1]]) |> round(digits = 2) * 100
+perc.gi.merge <- (gi.denoise[[5]] / gi.denoise[[1]]) |> round(digits = 2) * 100
+
+fun.indel <- read.table(file.path('03-denoise', 'logs', 'fun-indel.txt'), header = T)
 gi.indel <- read.table(file.path('03-denoise', 'logs', 'gi-indel.txt'), header = T)
-indel <- rbind(fun.indel, gi.indel)
+
+perc.fun.exp <- (fun.indel$correct / fun.indel$total) |> round(digits = 2) * 100
+perc.gi.exp <- (gi.indel$correct / gi.indel$total) |> round(digits = 2) * 100
+
+perc.in.fun <- (fun.indel$insertions / fun.indel$in.correct) |> round(digits = 3) * 100
+perc.in.gi <- (gi.indel$insertions / gi.indel$in.correct) |> round(digits = 3) * 100
+
+perc.del.fun <- (fun.indel$deletions / fun.indel$del.correct) |> round(digits = 2) * 100
+perc.del.gi <- (gi.indel$deletions / gi.indel$del.correct) |> round(digits = 2) * 100
 
 fun.asv <- readRDS(file.path('03-denoise', 'fun-seq-tab.rds')) |>
-    colnames() |> length() |> formatC(format = 'd', big.mark = ',')
+    colnames() |> length()
 gi.asv <- readRDS(file.path('03-denoise', 'gi-seq-tab.rds')) |>
-    colnames() |> length() |> formatC(format = 'd', big.mark = ',')
+    colnames() |> length()
 
 ```
 
-Fun forward error model | Fun reverse error model
---- | ---
-![fun-error-fwd](03-denoise/logs/fun-error-fwd.png) | ![fun-error-rev](03-denoise/logs/fun-error-rev.png)
+Sequence error correction (denoising) with DADA2 was performed separately for Fun and Gi reads. Prior to quality filtering and trimming, `r fun.denoise[[1]] |> formatC(format = 'd', big.mark = ',')` reads (`r perc.fun`%) had been trimmed with Fun primers, while `r gi.denoise[[1]] |> formatC(format = 'd', big.mark = ',')` reads (`r perc.gi`%) were trimmed with Gi primers. Filtering and trimming retained most reads (Fun = `r fun.denoise[[2]] |> formatC(format = 'd', big.mark = ',')`, Gi = `r gi.denoise[[2]] |> formatC(format = 'd', big.mark = ',')`), but this loss continued through denoising and read merging. Overall, Fun reads retained a greater percentage of sequences (`r perc.fun.merge`%) than Gi reads (`r perc.gi.merge`%).
 
-Gi forward error model | Gi reverse error model
---- | ---
-![gi-error-fwd](03-denoise/logs/gi-error-fwd.png) | ![gi-error-rev](03-denoise/logs/gi-error-rev.png)
+#### Frameshift trimming profiles
 
-Fun frameshift pairs | Gi frameshift pairs
---- | ---
-![fun-frameshift](03-denoise/fun-frameshift.png) | ![gi-frameshift](03-denoise/gi-frameshift.png)
+```{r frameshift, include=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.width=12}
+
+fun.frameshift <- readRDS(file.path('03-denoise', 'fun-frameshift.rds')) + scale_y_log10() + ylab('Log( total reads )')
+gi.frameshift <- readRDS(file.path('03-denoise', 'gi-frameshift.rds')) + scale_y_log10() + ylab('Log( total reads )')
+
+fun.frameshift + gi.frameshift
+
+```
+
+To examine the feasibility of frameshift indexing for larger libraries, indel occurrence rate (i.e., the rate at which single or multiple insertions and deletions occurred) was investigated using the shortest and longest expected frameshift pairs associated with Fun and Gi primers. Instances in which trimmed and denoised reads had shorter or longer frameshifts than the shortest and longest expected frameshift pairs were identified as instances of deletion and insertion, respectively. Overall, `r perc.fun.exp`% of Fun reads had expected frameshift pairs used in this experiment, but this rate was lower (`r perc.gi.exp`%) for Gi reads. Insertion occurrence rates were generally fairly low (Fun = `r perc.in.fun`%, Gi = `r perc.in.gi`%) relative to deletion occurrence rate (Fun = `r perc.del.fun`%, Gi = `r perc.del.gi`%), with Gi reads generally experiencing higher rates of indels.
+
+Retaining all denoised samples (even those which did not match any expected frameshift pair), a total of `r fun.asv |> formatC(format = 'd', big.mark = ',')` Fun amplicon sequencing variants (ASVs) and `r gi.asv |> formatC(format = 'd', big.mark = ',')` Gi ASVs were obtained. Many of these ASVs belonged to non-target frameshifts, so these erroneous samples were not retained in downstream analyses.
 
 ### Compile
-[Methods](#methods)
+[Results](#results)
 
 #### LULU post-clustering of Fun ASVs
-
+<details>
+  <summary>Expand</summary>
 ```{bash fun-compile, include=TRUE, echo=FALSE, comment=""}
 
 cat 04-compile/logs/fun-lulu.txt
 
 ```
+</details>
 
 #### LULU post-clustering of Gi ASVs
-
+<details>
+  <summary>Expand</summary>
 ```{bash gi-compile, include=TRUE, echo=FALSE, comment=""}
 
 cat 04-compile/logs/gi-lulu.txt
 
 ```
+</details>
+
+####
+
+```{r compile, include=TRUE}
+
+fun.lulu <- readRDS(file.path('04-compile', 'fun-lulu.rds'))
+fun.otu <- fun.lulu$tab |> colnames() |> length()
+fun.boot <- fun.lulu$boot
+noga <- fun.boot[1, 7]
+zaps <- fun.boot[2, 7]
+art <- fun.boot[3, 7]
+gi.lulu <- readRDS(file.path('04-compile', 'gi-lulu.rds'))
+gi.otu <- gi.lulu$tab |> colnames() |> length()
+
+```
+
+To group merged ASVs into ideally less artifactual operational taxonomic units (OTUs) Fun and Gi ASVs were post-clustered with the co-occurrence-informed LULU algorithm. In order for a less abundant "child" ASV to cluster with a more abundant "parent" ASV, the child needed to occur with the parent in 95% of samples. Fun ASV sequences also needed to have 97% similarity to investigate child-parent status, while 85% similarity was permitted for Gi ASVs. These percentages were not thoroughly investigated, and higher similarity thresholds will likely be tolerated. After clustering, only `r fun.otu |> formatC(format = 'd', big.mark = ',')` Fun OTUs were retained. The most abundant OTU (OTU.1) was assigned to NOGA (*Nothophaeocryptopus gaeumannii*, bootstrap support = `r noga`%). This was followed by OTU.2, which was assigned to *Zasmidium pseudotsugae* with `r zaps`% bootstrap support. A third OTU was also assigned to NOGA with lower support (`r art`%), but this OTU occurred as a single read in a single negative control sample. Only one other negative control sample was contaminated with a single OTU.1 read. As expected, a single Gi OTU was obtained after clustering.
 
 ### Rarefy
-[Methods](#methods)
+[Results](#results)
 
-![dilution-bias](05-rarefy/logs/dilution-bias.png)
+#### Sequencing bias prior to rarefaction
+
+```{r bias, include=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.width=9}
+
+readRDS(file.path('05-rarefy', 'logs', 'bias.rds'))
+
+```
+
+```{r rare, include=TRUE}
+
+rare <- readRDS(file.path('05-rarefy', 'fun-gi.rds'))
+target <- rare$depth
+depth.test <- rare$tab |> rowSums() > target
+samples <- depth.test |> length()
+pass <- depth.test[depth.test == T] |> length()
+
+subsamples <- 1000  # Need to add an element that reports the number of sub-samples!!!
+
+```
+
+####
+
+For each sample, a load index for each Fun OTU was calculated as the quotient of the number of reads associated with that Fun OTU divided by the number of reads associated with the single Gi OTU in that sample. To investigate bias in sequencing depth, the relationship between the load of NOGA (assigned to OTU.1) and the proportion of NOGA DNA diluted into PSME DNA was examined across samples associated with this standard curve. This relationship suggested that dilutions containing greater amounts of NOGA DNA were generally sequenced to greater depths compared to samples with less NOGA DNA. Given this, a rarefaction-based approach (involving repeated subsampling and averaging) was pursued in downstream analysis of the standard curve.
+
+All samples were randomly subsampled `r subsamples |> formatC(format = 'd', big.mark = ',')` times to a depth of `r target |> formatC(format = 'd', big.mark = ',')` reads when read depth allowed. This depth was only partially explored, but it was chosen because it was the depth necessary to recover Gi reads from all subsamples (necessary to create a rarefied calculation of load). Out of `r samples |> formatC(format = 'd', big.mark = ',')`, `r pass |> formatC(format = 'd', big.mark = ',')` had sufficient sequencing depth. Most samples that failed were among with the 8 samples of pooled needle DNA extractions (DFSSMT samples). Interpretation of these samples proceeded using non-rarefied estimates of load. These failures were likely due to known issues with amplification relative to samples involved in the NOGA standard curve.
 
 ### Analyze
-[Methods](#methods)
+[Results](#results)
 
 #### Base model
 
@@ -245,25 +311,38 @@ full <- lme(log10(mean_noga_load) ~ log10(dilution),
 ```
 
 | Full model residuals | Fun frameshift random intercepts | Gi frameshift random intercepts (nested within Fun) |
-| --- | --- | --- |
-| ![full-residuals](06-analyze/logs/full-residuals.png) | ![fun-full-rand](06-analyze/logs/fun-full-rand.png) | ![gi-full-rand](06-analyze/logs/gi-full-rand.png) |
+--- | --- | ---
+![full-residuals](06-analyze/logs/full-residuals.png) | ![fun-full-rand](06-analyze/logs/fun-full-rand.png) | ![gi-full-rand](06-analyze/logs/gi-full-rand.png)
 
-## Results
-[Return](#sections)
+####
+
+To test whether hamPCR-derived load calculations were incapable of represented known biological reality, fixed and mixed effect linear regression was performed with samples derived from the standard curve. Both full (mixed effect) and base (fixed effect) models included the proportion of NOGA DNA as an a fixed-effect, independent variable. The full model included Fun and Gi frameshift pairs as 4-level random effects. With more samples, each level of NOGA dilution would have samples associated with all combinations of Fun and Gi pairs (16) in order to investigate them as a fixed effect. Unfortunately, the effect of frameshift pair could only be accounted for with a mixed effect model. Full and base models were compared with a likelihood ratio test. The simplest model was retained if the null hypothesis could not be rejected. Leave-one-out cross-validation (LOOCV) was performed to investigate the sensitivity of this model to missing samples. Model residuals were also retained for further investigation.
 
 ### NOGA load regressed on NOGA dilution
 
-![dilution-load](06-analyze/load.png)
+```{r load, include=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.width=10, fig.height=8}
+
+readRDS(file.path('06-analyze', 'load.rds'))
+
+```
 
 ### Base model residuals associated with each frameshift pair
 
-![residuals](06-analyze/residuals.png)
+```{r residuals, include=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.width=7, fig.height=6}
+
+readRDS(file.path('06-analyze', 'residuals.rds'))
+
+```
 
 ### Comparing DFSSMT samples with relative abundance and fungal load data
 
 #### Raw metrics
 
-![taxa](06-analyze/taxa.png)
+```{r taxa, include=TRUE, message=FALSE, warning=FALSE, fig.align='center', fig.width=6, fig.height=8}
+
+readRDS(file.path('06-analyze', 'taxa.rds'))
+
+```
 
 #### Hierarchical clustering
 
