@@ -852,8 +852,6 @@ Expand
 
 </details>
 
-#### 
-
 Out of 485,439 read pairs (reads) obtained from the sequencing run,
 128,919 reads (27%) were demultiplexed with indices used in this
 experiment. Overall, 62,491 reads (13%) could not be demultiplexed to
@@ -1087,8 +1085,6 @@ Expand
 
 </details>
 
-#### 
-
 Although only certain combinations of frameshifted primers were used,
 all pairwise combinations of potential frameshifts were used to trim Fun
 and Gi reads. Additionally, shorter and longer frameshifts were also
@@ -1112,8 +1108,6 @@ Expand
 </summary>
 <img src="README_files/figure-gfm/error.model-1.png" style="display: block; margin: auto;" /><img src="README_files/figure-gfm/error.model-2.png" style="display: block; margin: auto;" />
 </details>
-
-#### 
 
 Sequence error correction (denoising) with DADA2 was performed
 separately for Fun and Gi reads. Prior to quality filtering and
@@ -1241,8 +1235,6 @@ Expand
 
 </details>
 
-#### 
-
 To group merged ASVs into ideally less artifactual operational taxonomic
 units (OTUs) Fun and Gi ASVs were post-clustered with the
 co-occurrence-informed LULU algorithm. In order for a less abundant
@@ -1267,8 +1259,6 @@ read. As expected, a single Gi OTU was obtained after clustering.
 #### Sequencing bias prior to rarefaction
 
 <img src="README_files/figure-gfm/bias-1.png" style="display: block; margin: auto;" />
-
-#### 
 
 For each sample, a load index for each Fun OTU was calculated as the
 quotient of the number of reads associated with that Fun OTU divided by
@@ -1319,8 +1309,6 @@ amplification relative to samples involved in the NOGA standard curve.
 | Full model residuals                                  | Fun frameshift random intercepts                    | Gi frameshift random intercepts (nested within Fun) |
 |-------------------------------------------------------|-----------------------------------------------------|-----------------------------------------------------|
 | ![full-residuals](06-analyze/logs/full-residuals.png) | ![fun-full-rand](06-analyze/logs/fun-full-rand.png) | ![gi-full-rand](06-analyze/logs/gi-full-rand.png)   |
-
-#### 
 
 To test whether hamPCR-derived load calculations were incapable of
 represented known biological reality, fixed and mixed effect linear
