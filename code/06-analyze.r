@@ -1,5 +1,7 @@
 # Determine the viability of hamPCR ####
 
+# Check on site + genotypes of DFSSMT samples!!! Need to confirm ####
+
 # Load packages ####
 library(ggplot2)
 library(caret)

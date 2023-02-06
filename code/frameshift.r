@@ -15,13 +15,12 @@ survey.dist <- function(i){
   data.frame(combo = combo,
              min_dist = min_dist,
              med_dist = med_dist,
-             mean_dist = mean_dist,
              max_dist = max_dist)
   
 }
 
 # Set parameters of frameshifts ####
-shifts <- 3:6
+shifts <- 6:9
 pairs <- expand.grid(fwd = shifts, rev = shifts, stringsAsFactors = F)
 row.names(pairs) <- paste('fwd', pairs$fwd, 'rev', pairs$rev, sep = '_')
 
@@ -32,7 +31,7 @@ diff <- dist(pairs, method = 'manhattan') |> as.matrix()
 combos <- combn(row.names(pairs), 6, simplify = F)
 
 # For each combination of frameshift pairs, calculate distance summaries ####
-compare <- parallel::mclapply(1:length(combos), survey.dist) |> dplyr::bind_rows()
+compare <- parallel::mclapply(1:length(combos), survey.dist) |> do.call(rbind, args = _)
 
 # Identify the combinations with optimal distance profiles ####
-max.compare <- compare |> dplyr::filter(min_dist == max(min_dist) & med_dist == max(med_dist))
+max.compare <- compare |> subset(min_dist == max(min_dist) & med_dist == max(med_dist))
