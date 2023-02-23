@@ -33,7 +33,7 @@ library(lulu)
 source(file.path('code', '00-functions.r'))
 
 # Create output directories ####
-out <- '04-all'
+out <- '04-host'
 logs <- file.path(out, 'logs')
 unlink(out, recursive = T)
 dir.create(logs, recursive = T)
@@ -64,7 +64,7 @@ colnames(fun.study.tab) <- fun.otus
 writeXStringSet(fun.seq, file = file.path('scratch', 'itsx.fa'))
 
 itsx.flags <- paste('-i', file.path('scratch', 'itsx.fa'),
-                    '-t "fungi,tracheophyta"',
+                    '-t "tracheophyta"',
                     '--preserve T',
                     '--cpu', threads, 
                     '-o', file.path(logs, 'itsx'),
