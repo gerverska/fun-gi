@@ -30,7 +30,7 @@ mkdir -p $logs
 touch $out/README.md
 
 # Use ITSxpress to single out Tracheophyta ITS2 (not sure of specificity) ####
-for fwd in $(find $in1 -name "*fun_rev-rc-R1.fq.gz" | grep -f data/nano-k.txt); do
+for fwd in $(find $in1 -name "*fun_rev-rc-R1.fq.gz"); do
 
     # Make the name of the corresponding reverse read ####
     rev=$(echo $fwd | sed 's/R1.fq.gz/R2.fq.gz/')
@@ -39,7 +39,7 @@ for fwd in $(find $in1 -name "*fun_rev-rc-R1.fq.gz" | grep -f data/nano-k.txt); 
     sample=$(basename $fwd | awk -F '-' '{print $1"-"$2"-"$3"-"$4"-"$5"-"$6}')
 
     # Extract ITS ####
-    itsxpress --fastq $fwd --fastq2 $rev --region ITS2 \
-    --taxa Tracheophyta --log $logs/${sample}-itsxpress.txt --outfile ${sample}.fq.gz --threads $1
+    itsxpress --fastq $fwd --fastq2 $rev --region ITS2 --reversed_primers \
+    --taxa Tracheophyta --log $logs/${sample}-itsxpress.txt --outfile $out/${sample}.fq.gz --threads $1
     
 done
