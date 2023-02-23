@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # Check the validity of the parallelization argument ####
 if [[ $# -lt 1 ]]; then
   echo 'Error: Please specify the number of threads to launch'

@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # Explicitly define every degenerate version of the temperature-limiting 5.8S-Fun primer ####
 
 # Set or make directories for input, output and log files ####

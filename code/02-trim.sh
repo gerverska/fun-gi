@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # Remove 5` gene primers from forward and reverse paired-end sequences. ####
 # Trimming is applied with respect to heterogeneity spacer identity.
 

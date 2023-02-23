@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # This script allows for the creation of environments on different platforms ####
 
 # Setup ####
